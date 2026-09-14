@@ -8,11 +8,11 @@ The driving school trains drivers through a combination of theoretical and pract
 
 Lab №1
 Requirements:
--develop at least two classes corresponding to the selected entities;
--define the necessary attributes and methods for each class;
--implement object creation and initialization;
--implement the modification of object characteristics;
--implement the retrieval of specific characteristics;
--implement the retrieval and display of complete object information;
--implement interaction between objects of the developed classes;
--create several objects of each class and demonstrate the functionality of the developed methods.
+* develop at least two classes corresponding to the selected entities  
+* define the necessary attributes and methods for each class  
+* implement object creation and initialization  
+* implement the modification of object characteristics
+* implement the retrieval of specific characteristics
+* implement the retrieval and display of complete object information
+* implement interaction between objects of the developed classes
+* create several objects of each class and demonstrate the functionality of the developed methods
