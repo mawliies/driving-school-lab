@@ -1,4 +1,4 @@
-#include "instructor.h"
+#include "drivingSchool.h"
 
 Instructor::Instructor(std::string name, std::string surname, int age, int drivingExp, Categories ctg) {
 	this->name = name;
