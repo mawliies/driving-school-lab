@@ -67,3 +67,16 @@ vcpkg_installed/
 # test output & cache
 Testing/
 .cache/
+
+# Игнорируем папки сборки x64 и Debug/Release
+x64/
+x64/
+[Dd]ebug/
+[Rr]elease/
+
+# Игнорируем персональные настройки разработчика (обязательно)
+*.vcxproj.user
+*.vcxproj.filters
+
+# Внутренняя папка Visual Studio (кэш, базы данных Intellisense)
+.vs/
