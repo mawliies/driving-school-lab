@@ -1,4 +1,4 @@
-#include "C:\labs\2k\DrivingSchool\DrivingSchool\h\drivingSchool.h"
+#include "drivingSchool.h"
 
 int main() {
 	DrivingSchool school(nullptr, nullptr);

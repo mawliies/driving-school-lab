@@ -1,6 +1,6 @@
 #pragma once
-#include "C:\labs\2k\DrivingSchool\DrivingSchool\h\instructor.h"
-#include"C:\labs\2k\DrivingSchool\DrivingSchool\h\student.h"
+#include "instructor.h"
+#include "student.h"
 
 enum Categories {
 	AM, A, B, C, D, F, I

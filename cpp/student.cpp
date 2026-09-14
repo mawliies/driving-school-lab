@@ -1,4 +1,4 @@
-#include "C:\labs\2k\DrivingSchool\DrivingSchool\h\drivingSchool.h"
+#include "drivingSchool.h"
 
 Student::Student(std::string name, std::string surname, int age, Categories myCategory, Instructor* myInstructor) {
 	this->name = name;
