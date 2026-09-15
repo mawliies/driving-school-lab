@@ -37,7 +37,7 @@ void DrivingSchool::defining(Student* stud) {
 	std::vector<Instructor*> suitableInstr;
 	int choice = 0;
 
-	for (size_t i = 0; i < instructors.size(); i++)
+	for (int i = 0; i < instructors.size(); i++)
 		if (instructors[i]->hasCategory(stud->getMyCategory()))
 			suitableInstr.push_back(instructors[i]);
 
@@ -47,12 +47,12 @@ void DrivingSchool::defining(Student* stud) {
 	}
 
 	std::cout << "\n-- Available instructors for " << ctgToString(stud->getMyCategory()) << " --\n" << std::endl;
-	for (size_t i = 0; i < suitableInstr.size(); i++)
+	for (int i = 0; i < suitableInstr.size(); i++)
 		std::cout << i + 1 << ". " << suitableInstr[i]->getName() << " " << suitableInstr[i]->getSurname() << ". (Experience: " << suitableInstr[i]->getExp() << " years).\n" << std::endl;
 
 	std::cout << "Enter the number of the selected instructor (0 to cancel): ";
 	std::cin >> choice;
-	if (choice > 0 && choice <= static_cast<int>(suitableInstr.size())) {
+	if (choice > 0 && choice <= suitableInstr.size()) {
 		stud->setInstructor(suitableInstr[choice - 1]);
 		std::cout << "Congratulations! The instructor has been assigned." << std::endl;
 	}
@@ -80,13 +80,13 @@ void DrivingSchool::registration() {
 	}
 	std::cout << "\nEnter your desired license category (0-AM, 1-A, 2-B, 3-C, 4-D, 5-F, 6-I): " << std::endl;
 	std::cin >> newCategoryNum;
-	if (((newAge < 18 && newAge > 16) && newCategoryNum != 1)) {
+	if (((newAge < 18 && newAge >= 16) && newCategoryNum != 1)) {
 		std::cout << "\nRegistration failed: You can register only on license category AM!" << std::endl;
 		std::cout << "--------------------------------" << std::endl;
 		system("pause");
 		return;
 	}
-	if (((newAge > 18 && newAge < 21) && newCategoryNum >= 4)) {
+	if (((newAge >= 18 && newAge < 21) && newCategoryNum >= 4)) {
 		std::cout << "\nRegistration failed: You can't register on D, F, I license categories!" << std::endl;
 		std::cout << "--------------------------------" << std::endl;
 		system("pause");
@@ -134,19 +134,14 @@ void DrivingSchool::profile(Student* stud) {
 	}
 }
 
-void DrivingSchool::findStudent() {
-	/*std::string myName;
-	std::string mySurname;
-	int reg;*/				//для защиты лр нужен автоввод
-	std::string myName = "Daria", mySurname = "Zhvirblya";
+void DrivingSchool::findStudent() {			
+	std::string myName = "Daria", mySurname = "Zhvirblya";	//для защиты лр нужен автоввод
 	Student* found = nullptr;
 	int reg = 2;
 
 	std::cout << "\nTo log into your personal profile, enter your first and last name:\n" << std::endl;
-	/*std::cin >> myName;
-	std::cin >> mySurname;*/
 	std::cout << "[AUTO] " << myName << " " << mySurname << "." << std::endl;
-	system("pause"); //не используется при обычном вводе
+	system("pause");
 	for (int i = 0; i < students.size(); i++)
 		if (this->students[i]->getName() == myName && this->students[i]->getSurname() == mySurname) {
 			found = this->students[i];
@@ -161,7 +156,6 @@ void DrivingSchool::findStudent() {
 	else {		//данный сценарий при автовводе опущен
 		std::cout << "Account not found. Would you like to register?\n" << std::endl;
 		std::cout << "1. YES\n2. NO\n" << std::endl;
-		//std::cin >> reg;
 		if (reg == 1)
 			this->registration();
 		else
@@ -187,8 +181,9 @@ void DrivingSchool::adminDelS() {
 }
 
 void DrivingSchool::adminDelI() {
-	system("cls");
 	int num;
+
+	system("cls");
 	std::cout << "!YOU LOGGED IN AS AN ADMINISTRATOR!" << std::endl;
 	std::cout << "------------------------------------" << std::endl;
 	for (int i = 0; i < instructors.size(); i++)
@@ -203,40 +198,33 @@ void DrivingSchool::adminDelI() {
 }
 
 void DrivingSchool::adminAddS() {
-	/*std::string newName, newSurname;		 //для защиты лр нужен автоввод
-	int newAge, newCategoryNum;*/
-	std::string newName = "Lady", newSurname = "Gaga";
-	int newAge = 40, newCategoryNum = 2;
+	std::string newName = "Lady", newSurname = "Gaga";	//для защиты лр нужен автоввод                     (попр. через registration)
+	int newAge = 17, newCategoryNum = 2;
 
 	system("cls");
 	std::cout << "!YOU LOGGED IN AS AN ADMINISTRATOR!" << std::endl;
 	std::cout << "------------------------------------" << std::endl;
 	std::cout << "Enter student's first and last name: " << std::endl;
-	/*std::cin >> newName;
-	std::cin >> newSurname;*/
 	std::cout << "[AUTO] " << newName << " " << newSurname << "." << std::endl;
 	std::cout << "\nEnter student's age: " << std::endl;
 	//std::cin >> newAge;
 	std::cout << "[AUTO] " << newAge << "." << std::endl;
-	if (newAge < 16) {
+	if (newAge < 16) {							//сделать проверку общей
 		std::cout << "\nRegistration failed: Student must be at least 16 years old to register!" << std::endl;
 		std::cout << "--------------------------------" << std::endl;
-		system("pause");
 		return;
 	}
 	std::cout << "\nEnter student's desired license category (0-AM, 1-A, 2-B, 3-C, 4-D, 5-F, 6-I): " << std::endl;
 	//std::cin >> newCategoryNum;
 	std::cout << "[AUTO] " << newCategoryNum << "." << std::endl;
-	if (((newAge < 18 && newAge > 16) && newCategoryNum != 1)) {
+	if (((newAge < 18 && newAge >= 16) && newCategoryNum != 1)) {
 		std::cout << "\nRegistration failed: You can register this student only on license category AM!" << std::endl;
 		std::cout << "--------------------------------" << std::endl;
-		system("pause");
 		return;
 	}
-	if (((newAge > 18 && newAge < 21) && newCategoryNum >= 4)) {
+	if (((newAge >= 18 && newAge < 21) && newCategoryNum >= 4)) {
 		std::cout << "\nRegistration failed: You can't register this student on D, F, I license categories!" << std::endl;
 		std::cout << "--------------------------------" << std::endl;
-		system("pause");
 		return;
 	}
 	Categories newCategory = static_cast<Categories>(newCategoryNum);
@@ -408,7 +396,7 @@ void menu(DrivingSchool& school) {
 			break;
 		}
 		case 4: {
-			std::cout << "Program successfully completed.";
+			std::cout << "Program successfully completed.\n";
 			toDo = false;
 		}
 		}
