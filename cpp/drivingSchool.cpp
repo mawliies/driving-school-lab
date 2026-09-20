@@ -142,8 +142,10 @@ void DrivingSchool::findStudent() {
 	std::cout << "\nTo log into your personal profile, enter your first and last name:\n" << std::endl;
 	std::cout << "[AUTO] " << myName << " " << mySurname << "." << std::endl;
 	system("pause");
+
+	Student other(myName, mySurname, 0, Categories::AM, nullptr);
 	for (int i = 0; i < students.size(); i++)
-		if (this->students[i]->getName() == myName && this->students[i]->getSurname() == mySurname) {
+		if (*(this->students[i])==other) {	//перегрузка ==
 			found = this->students[i];
 			break;
 		}
@@ -153,7 +155,7 @@ void DrivingSchool::findStudent() {
 
 		this->profile(found);
 	}
-	else {		//данный сценарий при автовводе опущен
+	else {		
 		std::cout << "Account not found. Would you like to register?\n" << std::endl;
 		std::cout << "1. YES\n2. NO\n" << std::endl;
 		if (reg == 1)
@@ -198,7 +200,7 @@ void DrivingSchool::adminDelI() {
 }
 
 void DrivingSchool::adminAddS() {
-	std::string newName = "Lady", newSurname = "Gaga";	//для защиты лр нужен автоввод                     (попр. через registration)
+	std::string newName = "Lady", newSurname = "Gaga";	//для защиты лр нужен автоввод                     6
 	int newAge = 17, newCategoryNum = 2;
 
 	system("cls");
@@ -207,15 +209,13 @@ void DrivingSchool::adminAddS() {
 	std::cout << "Enter student's first and last name: " << std::endl;
 	std::cout << "[AUTO] " << newName << " " << newSurname << "." << std::endl;
 	std::cout << "\nEnter student's age: " << std::endl;
-	//std::cin >> newAge;
 	std::cout << "[AUTO] " << newAge << "." << std::endl;
-	if (newAge < 16) {							//сделать проверку общей
+	if (newAge < 16) {							
 		std::cout << "\nRegistration failed: Student must be at least 16 years old to register!" << std::endl;
 		std::cout << "--------------------------------" << std::endl;
 		return;
 	}
 	std::cout << "\nEnter student's desired license category (0-AM, 1-A, 2-B, 3-C, 4-D, 5-F, 6-I): " << std::endl;
-	//std::cin >> newCategoryNum;
 	std::cout << "[AUTO] " << newCategoryNum << "." << std::endl;
 	if (((newAge < 18 && newAge >= 16) && newCategoryNum != 1)) {
 		std::cout << "\nRegistration failed: You can register this student only on license category AM!" << std::endl;
@@ -234,10 +234,7 @@ void DrivingSchool::adminAddS() {
 	std::cout << "\nRegistration successful! " << std::endl;
 }
 void DrivingSchool::adminAddI() {
-	/*std::string newName, newSurname;			//для защиты лр нужен автоввод
-	int newAge, newCategoryNum, newExp;
-	int answer;*/
-	std::string newName = "Ryan", newSurname = "Gosling";
+	std::string newName = "Ryan", newSurname = "Gosling";	//для защиты лр нужен автоввод
 	int newAge = 22, newCategoryNum = 2, newExp = 3;
 	int answer = 2;
 
@@ -245,17 +242,12 @@ void DrivingSchool::adminAddI() {
 	std::cout << "!YOU LOGGED IN AS AN ADMINISTRATOR!" << std::endl;
 	std::cout << "------------------------------------" << std::endl;
 	std::cout << "Enter instructor's first and last name: " << std::endl;
-	/*std::cin >> newName;
-	std::cin >> newSurname;*/
 	std::cout << "[AUTO] " << newName << " " << newSurname << "." << std::endl;
 	std::cout << "\nEnter instructor's age: " << std::endl;
-	//std::cin >> newAge;
 	std::cout << "[AUTO] " << newAge << "." << std::endl;
 	std::cout << "\nEnter instructor's experience: " << std::endl;
-	//std::cin >> newExp;
 	std::cout << "[AUTO] " << newExp << "." << std::endl;
 	std::cout << "\nEnter instructor's initial license category (0-AM, 1-A, 2-B, 3-C, 4-D, 5-F, 6-I): " << std::endl;
-	//std::cin >> newCategoryNum;
 	std::cout << "[AUTO] " << newCategoryNum << "." << std::endl;
 	Categories newCategory = static_cast<Categories>(newCategoryNum);
 
@@ -263,10 +255,9 @@ void DrivingSchool::adminAddI() {
 	bool add = true;
 	while (add) {
 		std::cout << "Does the instructor have more categories?\n1. Yes.\n2. No." << std::endl;
-		//std::cin >> answer;
 		std::cout << "[AUTO] " << answer << "." << std::endl;
 		switch (answer) {
-		case 1: {		//данный сценарий при автовводе опущен
+		case 1: {		
 			std::cout << "Enter category number (0-AM, 1-A, 2-B, 3-C, 4-D, 5-F, 6-I): ";
 			std::cin >> newCategoryNum;
 			Categories newCategory = static_cast<Categories>(newCategoryNum);
@@ -351,7 +342,7 @@ void DrivingSchool::admin() {
 	}
 }
 
-void DrivingSchool::printAllInstr() {
+void DrivingSchool::printAllInstr() {		
 	system("cls");
 	if (this->instructors.empty())
 		std::cout << "The instructor database is currently empty." << std::endl;
@@ -360,6 +351,34 @@ void DrivingSchool::printAllInstr() {
 		for (int i = 0; i < instructors.size(); i++)
 			this->instructors[i]->printInfo();
 	}
+	system("pause");
+}
+
+void DrivingSchool::statistics() {		//перегрузка >, <
+	system("cls");
+	if (this->instructors.empty()) {
+		std::cout << "The instructor database is currently empty. Statistics unavailable." << std::endl;
+		system("pause");
+		return;
+	}
+
+	Instructor* best = this->instructors[0];
+	Instructor* young = this->instructors[0];
+	std::cout << "==================================================" << std::endl;
+	std::cout << "           DRIVING SCHOOL STATISTICS              " << std::endl;
+	std::cout << "==================================================" << std::endl;
+	for (int i = 0; i < instructors.size(); i++) {
+		if (i != 0){
+			if (*(this->instructors[i]) > *best)
+				best = this->instructors[i];
+			if (*(this->instructors[i]) < *young)
+				young = this->instructors[i];
+		}
+	}
+	std::cout << "\n--THE INSTRUCTOR OF THE YEAR--\n";
+	best->printInfo();
+	std::cout << "\n--THE YOUNGEST WORKER WITH GREAT POTENTIAL--\n";
+	young->printInfo();
 	system("pause");
 }
 
@@ -380,7 +399,7 @@ void menu(DrivingSchool& school) {
 	while (toDo) {
 		system("cls");
 		std::cout << "-----------DRIVING SCHOOL-----------" << std::endl;
-		std::cout << "\n--1. Log in as a student.\n--2. Log in as an administrator.\n--3. View general information.\n--4. Exit program.\n";
+		std::cout << "\n--1. Log in as a student.\n--2. Log in as an administrator.\n--3. View general information.\n--4. View statistics.\n--5. Exit program.\n";
 		std::cin >> choice;
 		switch (choice) {
 		case 1: {
@@ -396,21 +415,26 @@ void menu(DrivingSchool& school) {
 			break;
 		}
 		case 4: {
-			std::cout << "Program successfully completed.\n";
-			toDo = false;
+			school.statistics();
+			break;
 		}
+		case 5: {
+			  std::cout << "Program successfully completed.\n";
+			  toDo = false;
 		}
-
+		default:
+			break;
+		}
 	}
 }
 
 void test(DrivingSchool& school) {		//тестовые для лр
 	Instructor* i1 = new Instructor("Borat", "Sagdiev", 54, 25, AM);
 	Instructor* i2 = new Instructor("Baby", "Yoda", 50, 20, B);
-	Instructor* i3 = new Instructor("Skibidi", "Toilet", 37, 11, C);
+	Instructor* i3 = new Instructor("Skibidi", "Toilet", 25, 3, C);
 	Instructor* i4 = new Instructor("Big", "Floppa", 22, 1, B);
 	Instructor* i5 = new Instructor("Ozzy", "Osborne", 70, 43, B);
-	Instructor* i6 = new Instructor("Lana", "DelRay", 41, 17, B);
+	Instructor* i6 = new Instructor("Lana", "DelRay", 20, 1, B);
 
 	i1->addCategory(A);
 	i3->addCategory(D); i3->addCategory(F);

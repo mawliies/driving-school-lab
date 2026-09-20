@@ -25,6 +25,10 @@ Instructor* Student::getInstructor() {
 void Student::setInstructor(Instructor* instr) {
 	this->myInstructor = instr;
 }
+bool Student::operator==(const Student& other)const {
+	return(this->name == other.name && this->surname == other.surname);
+}
+
 void Student::printInfo() {
 	std::cout << "Student: " << this->name << " " << this->surname << ".\nAge: " << this->age << ".\nDesired category: " << ctgToString(this->myCategory) << ".\nAssigned instructor: ";
 	if (this->myInstructor != nullptr)

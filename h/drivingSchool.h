@@ -26,6 +26,7 @@ public:
 	void adminAddS();
 	void adminAddI();
 	void printAllInstr();
+	void statistics();
 
 	~DrivingSchool();
 };
