@@ -1,7 +1,6 @@
 #include "drivingSchool.h"
 #include "instructor.h"
 #include "student.h"
-
 std::string ctgToString(Categories ctg) {
 	switch (ctg) {
 	case AM:
@@ -35,22 +34,22 @@ void DrivingSchool::registrStudent(Student* stud) {
 	this->students.push_back(stud);
 }
 
-void DrivingSchool::defining(Student* stud) {
+void defining(DrivingSchool& school, Student* stud) {	//реализация friend
 	std::vector<Instructor*> suitableInstr;
 	int choice = 0;
 
-	for (int i = 0; i < instructors.size(); i++)
-		if (instructors[i]->hasCategory(stud->getMyCategory()))
-			suitableInstr.push_back(instructors[i]);
+	for (int i = 0; i < school.instructors.size(); i++)
+		if (school.instructors[i]->hasCategory(stud->myCategory))
+			suitableInstr.push_back(school.instructors[i]);
 
 	if (suitableInstr.empty()) {
-		std::cout << "No suitable instructor found for student " << stud->getName() << " " << stud->getSurname() << "." << std::endl;
+		std::cout << "No suitable instructor found for student " << stud->name << " " << stud->surname << "." << std::endl;
 		return;
 	}
 
-	std::cout << "\n-- Available instructors for " << ctgToString(stud->getMyCategory()) << " --\n" << std::endl;
+	std::cout << "\n-- Available instructors for " << ctgToString(stud->myCategory) << " --\n" << std::endl;
 	for (int i = 0; i < suitableInstr.size(); i++)
-		std::cout << i + 1 << ". " << suitableInstr[i]->getName() << " " << suitableInstr[i]->getSurname() << ". (Experience: " << suitableInstr[i]->getExp() << " years).\n" << std::endl;
+		std::cout << i + 1 << ". " << suitableInstr[i]->name << " " << suitableInstr[i]->surname << ". (Experience: " << suitableInstr[i]->drivingExp << " years).\n" << std::endl;
 
 	std::cout << "Enter the number of the selected instructor (0 to cancel): ";
 	std::cin >> choice;
@@ -118,7 +117,7 @@ void DrivingSchool::profile(Student* stud) {
 		}
 		case 2: {
 			system("cls");
-			this->defining(stud);
+			defining(*this, stud);
 			break;
 		}
 		case 3: {

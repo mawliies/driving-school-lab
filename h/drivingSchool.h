@@ -19,7 +19,7 @@ public:
 
 	void registrInstructor(Instructor* instr);
 	void registrStudent(Student* stud);
-	void defining(Student* stud);
+	friend void defining(DrivingSchool& school, Student* stud);
 	void registration();
 	void profile(Student* stud);
 	void findStudent();
@@ -33,6 +33,6 @@ public:
 
 	~DrivingSchool();
 };
-
+void defining(DrivingSchool& school, Student* stud);
 void menu(DrivingSchool& school);
 void test(DrivingSchool& school);
