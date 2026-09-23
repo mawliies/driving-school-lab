@@ -17,11 +17,11 @@ Lab №1 Requirements:
 * create several objects of each class and demonstrate the functionality of the developed methods.
 
 Lab №2 Requirements:
-*implement overloaded object comparison operators;
-*implement an equality operator based on a selected identifier or unique characteristic;
-*implement a relational operator based on a numeric, temporal, or other comparable characteristic;
-*overload the << operator to output object information;
-*overload the >> operator to input object data;
-*implement at least one friend function providing access to the class's private data;
-*overload the += and -= operators for a class managing a set of related objects;
-*provide for handling situations where an operation cannot be performed.
+* implement overloaded object comparison operators;
+* implement an equality operator based on a selected identifier or unique characteristic;
+* implement a relational operator based on a numeric, temporal, or other comparable characteristic;
+* overload the << operator to output object information;
+* overload the >> operator to input object data;
+* implement at least one friend function providing access to the class's private data;
+* overload the += and -= operators for a class managing a set of related objects;
+* provide for handling situations where an operation cannot be performed.
