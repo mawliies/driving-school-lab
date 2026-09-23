@@ -2,8 +2,10 @@
 #include <string>
 #include <vector>
 #include <iostream>
-
+class Student;
+class DrivingSchool;
 enum Categories;
+
 class Instructor {
 private:
 	std::string name;
@@ -20,12 +22,11 @@ public:
 
 	void addCategory(Categories owned);
 	bool hasCategory(Categories ctg);
-	void printInfo();
 
 	bool operator>(const Instructor& other)const;
 	bool operator<(const Instructor& other)const;
+
 	friend std::ostream& operator<<(std::ostream& os, const Instructor& instr);
-	friend std::istream& operator>>(std::istream& is, Instructor& instr);
 
 	~Instructor();
 };

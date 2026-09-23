@@ -1,7 +1,11 @@
 #pragma once
-#include "instructor.h"
-
+#include <string>
+#include <vector>
+#include <iostream>
 class Instructor;
+class DrivingSchool;
+enum Categories;
+
 class Student {
 private:
 	std::string name;
@@ -21,9 +25,8 @@ public:
 	bool operator==(const Student& other)const;
 
 	void setInstructor(Instructor* instr);
-	void printInfo();
-	/*friend std::ostream& operator<<(std::ostream& os, const Student& stud);
-	friend std::istream& operator>>(std::istream & is, const Student & stud);*/
+	friend std::istream& operator>>(std::istream& is,Student & stud);
+	friend std::ostream& operator<<(std::ostream& os, Student& stud);
 
 	~Student();
 };

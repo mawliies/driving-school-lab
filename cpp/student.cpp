@@ -1,3 +1,5 @@
+#include "student.h"
+#include "instructor.h"
 #include "drivingSchool.h"
 
 Student::Student(std::string name, std::string surname, int age, Categories myCategory, Instructor* myInstructor) {
@@ -28,15 +30,19 @@ void Student::setInstructor(Instructor* instr) {
 bool Student::operator==(const Student& other)const {
 	return(this->name == other.name && this->surname == other.surname);
 }
-
-void Student::printInfo() {
-	std::cout << "Student: " << this->name << " " << this->surname << ".\nAge: " << this->age << ".\nDesired category: " << ctgToString(this->myCategory) << ".\nAssigned instructor: ";
-	if (this->myInstructor != nullptr)
-		std::cout << this->myInstructor->getName() << " " << this->myInstructor->getSurname() << "." << std::endl;
+std::ostream& operator<<(std::ostream& os, Student& stud) {
+	os << "Student: " << stud.name << " " << stud.surname << ".\nAge: " << stud.age << ".\nDesired category: " << ctgToString(stud.myCategory) << ".\nAssigned instructor: ";
+	if (stud.myInstructor != nullptr)
+		os << stud.myInstructor->getName() << " " << stud.myInstructor->getSurname() << "." << std::endl;
 	else
-		std::cout << "not assigned." << std::endl;
-	std::cout << "--------------------------------" << std::endl;
-	system("pause");
+		os << "not assigned." << std::endl;
+	os << "--------------------------------" << std::endl;
+	return os;
+}
+std::istream& operator>>(std::istream& is, Student& stud) {
+	is >> stud.name;
+	is >> stud.surname;
+	return is;
 }
 Student::~Student() {
 	std::cout << "Student " << this->name << " " << this->surname << " has been deleted." << std::endl;

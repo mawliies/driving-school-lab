@@ -1,6 +1,9 @@
 #pragma once
-#include "instructor.h"
-#include "student.h"
+#include <string>
+#include <vector>
+#include <iostream>
+class Instructor;
+class Student;
 
 enum Categories {
 	AM, A, B, C, D, F, I

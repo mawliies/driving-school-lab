@@ -1,4 +1,6 @@
 #include "drivingSchool.h"
+#include "instructor.h"
+#include "student.h"
 
 std::string ctgToString(Categories ctg) {
 	switch (ctg) {
@@ -75,7 +77,6 @@ void DrivingSchool::registration() {
 	if (newAge < 16) {
 		std::cout << "\nRegistration failed: You must be at least 16 years old to register!" << std::endl;
 		std::cout << "--------------------------------" << std::endl;
-		system("pause");
 		return;
 	}
 	std::cout << "\nEnter your desired license category (0-AM, 1-A, 2-B, 3-C, 4-D, 5-F, 6-I): " << std::endl;
@@ -83,13 +84,11 @@ void DrivingSchool::registration() {
 	if (((newAge < 18 && newAge >= 16) && newCategoryNum != 1)) {
 		std::cout << "\nRegistration failed: You can register only on license category AM!" << std::endl;
 		std::cout << "--------------------------------" << std::endl;
-		system("pause");
 		return;
 	}
 	if (((newAge >= 18 && newAge < 21) && newCategoryNum >= 4)) {
 		std::cout << "\nRegistration failed: You can't register on D, F, I license categories!" << std::endl;
 		std::cout << "--------------------------------" << std::endl;
-		system("pause");
 		return;
 	}
 	Categories newCategory = static_cast<Categories>(newCategoryNum);
@@ -98,7 +97,6 @@ void DrivingSchool::registration() {
 	this->registrStudent(newStudent);
 	std::cout << "\nRegistration successful! You are now in the database." << std::endl;
 	std::cout << "--------------------------------" << std::endl;
-	system("pause");
 }
 
 void DrivingSchool::profile(Student* stud) {
@@ -114,8 +112,8 @@ void DrivingSchool::profile(Student* stud) {
 		case 1:
 		{
 			system("cls");
-			stud->printInfo();
-
+			std::cout << stud;
+			system("pause");
 			break;
 		}
 		case 2: {
@@ -134,18 +132,17 @@ void DrivingSchool::profile(Student* stud) {
 	}
 }
 
-void DrivingSchool::findStudent() {			
-	std::string myName = "Daria", mySurname = "Zhvirblya";	//для защиты лр нужен автоввод
+void DrivingSchool::findStudent() {			//перегрузка >>, ==
+	std::string myName, mySurname;	
 	Student* found = nullptr;
-	int reg = 2;
+	Student other("", "", 0, Categories::AM, nullptr);
+	int reg;
 
 	std::cout << "\nTo log into your personal profile, enter your first and last name:\n" << std::endl;
-	std::cout << "[AUTO] " << myName << " " << mySurname << "." << std::endl;
-	system("pause");
+	std::cin >> other;	
 
-	Student other(myName, mySurname, 0, Categories::AM, nullptr);
 	for (int i = 0; i < students.size(); i++)
-		if (*(this->students[i])==other) {	//перегрузка ==
+		if (*(this->students[i])==other) {	
 			found = this->students[i];
 			break;
 		}
@@ -158,10 +155,11 @@ void DrivingSchool::findStudent() {
 	else {		
 		std::cout << "Account not found. Would you like to register?\n" << std::endl;
 		std::cout << "1. YES\n2. NO\n" << std::endl;
+		do
+			std::cin >> reg;
+		while (reg != 1 && reg != 2);
 		if (reg == 1)
 			this->registration();
-		else
-			std::cout << "[AUTO] 2." << std::endl;
 		system("pause");
 		return;
 	}
@@ -200,7 +198,7 @@ void DrivingSchool::adminDelI() {
 }
 
 void DrivingSchool::adminAddS() {
-	std::string newName = "Lady", newSurname = "Gaga";	//для защиты лр нужен автоввод                     6
+	std::string newName = "Lady", newSurname = "Gaga";	//для защиты лр нужен автоввод 
 	int newAge = 17, newCategoryNum = 2;
 
 	system("cls");
@@ -349,12 +347,12 @@ void DrivingSchool::printAllInstr() {
 	else {
 		std::cout << "--ACTIVE INSTRUCTOR ROSTER--\n" << std::endl;
 		for (int i = 0; i < instructors.size(); i++)
-			this->instructors[i]->printInfo();
+			std::cout << *this->instructors[i];
 	}
 	system("pause");
 }
 
-void DrivingSchool::statistics() {		//перегрузка >, <
+void DrivingSchool::statistics() {		//перегрузка >, <, <<
 	system("cls");
 	if (this->instructors.empty()) {
 		std::cout << "The instructor database is currently empty. Statistics unavailable." << std::endl;
@@ -376,9 +374,9 @@ void DrivingSchool::statistics() {		//перегрузка >, <
 		}
 	}
 	std::cout << "\n--THE INSTRUCTOR OF THE YEAR--\n";
-	best->printInfo();
+	std::cout << *best;
 	std::cout << "\n--THE YOUNGEST WORKER WITH GREAT POTENTIAL--\n";
-	young->printInfo();
+	std::cout << *young;
 	system("pause");
 }
 
