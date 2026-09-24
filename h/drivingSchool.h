@@ -17,8 +17,9 @@ private:
 public:
 	DrivingSchool(Instructor* instr = nullptr, Student* stud = nullptr);
 
-	void registrInstructor(Instructor* instr);
-	void registrStudent(Student* stud);
+	DrivingSchool& operator+=(Student* stud);
+	DrivingSchool& operator+=(Instructor* instr);
+	DrivingSchool& operator-=(int index);
 	friend void defining(DrivingSchool& school, Student* stud);
 	void registration();
 	void profile(Student* stud);
@@ -29,6 +30,7 @@ public:
 	void adminAddS();
 	void adminAddI();
 	void printAllInstr();
+	void printAllStud();
 	void statistics();
 
 	~DrivingSchool();

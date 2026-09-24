@@ -26,7 +26,7 @@ bool Instructor::hasCategory(Categories ctg) {
 			return true;
 	return false;
 }
-std::ostream& operator<<(std::ostream& os, const Instructor& instr) {	//перегрузка <<
+std::ostream& operator<<(std::ostream& os, const Instructor& instr) {
 	os << "Instructor: " << instr.name << " " << instr.surname << ".\nAge: " << instr.age << ".\nDriving experience: " << instr.drivingExp << " years.\nAuthorized for categories: ";
 	for (int i = 0; i < instr.allowedCategory.size(); i++)
 		os << ctgToString(instr.allowedCategory[i]) << " ";

@@ -1,6 +1,7 @@
 #include "drivingSchool.h"
 #include "instructor.h"
 #include "student.h"
+
 std::string ctgToString(Categories ctg) {
 	switch (ctg) {
 	case AM:
@@ -26,12 +27,18 @@ DrivingSchool::DrivingSchool(Instructor* instr, Student* stud) {
 	if (stud != nullptr) this->students.push_back(stud);
 }
 
-void DrivingSchool::registrInstructor(Instructor* instr) {
+DrivingSchool& DrivingSchool::operator+=(Instructor* instr) {
+	if (instr == nullptr)
+		return *this;
 	this->instructors.push_back(instr);
+	return *this;
 }
 
-void DrivingSchool::registrStudent(Student* stud) {
+DrivingSchool& DrivingSchool::operator+=(Student* stud) {
+	if (stud == nullptr)
+		return *this;
 	this->students.push_back(stud);
+	return *this;
 }
 
 void defining(DrivingSchool& school, Student* stud) {	//реализация friend
@@ -93,7 +100,7 @@ void DrivingSchool::registration() {
 	Categories newCategory = static_cast<Categories>(newCategoryNum);
 
 	Student* newStudent = new Student(newName, newSurname, newAge, newCategory, nullptr);
-	this->registrStudent(newStudent);
+	*this += newStudent;
 	std::cout << "\nRegistration successful! You are now in the database." << std::endl;
 	std::cout << "--------------------------------" << std::endl;
 }
@@ -111,7 +118,7 @@ void DrivingSchool::profile(Student* stud) {
 		case 1:
 		{
 			system("cls");
-			std::cout << stud;
+			std::cout << *stud;
 			system("pause");
 			break;
 		}
@@ -164,6 +171,15 @@ void DrivingSchool::findStudent() {			//перегрузка >>, ==
 	}
 
 }
+DrivingSchool& DrivingSchool::operator-=(int index) {	//перегрузка -=
+	if (index<0 || index>students.size()) {
+		std::cout << "Invalid student index!";
+		return *this;
+	}
+	delete this->students[index - 1];
+	this->students.erase(this->students.begin() + (index - 1));
+	return *this;
+}
 
 void DrivingSchool::adminDelS() {
 	int num;
@@ -175,11 +191,10 @@ void DrivingSchool::adminDelS() {
 		std::cout << i + 1 << ". " << students[i]->getName() << " " << students[i]->getSurname() << std::endl;
 	std::cout << "Enter student number: ";
 	std::cin >> num;
-	delete this->students[num - 1];
-	this->students.erase(this->students.begin() + (num - 1));
+	*this -= num;
 }
 
-void DrivingSchool::adminDelI() {
+void DrivingSchool::adminDelI() {	//перегрузка -=
 	int num;
 
 	system("cls");
@@ -192,12 +207,11 @@ void DrivingSchool::adminDelI() {
 	for (int i = 0; i < students.size(); i++)
 		if (this->students[i]->getInstructor() != nullptr && this->students[i]->getInstructor() == this->instructors[num - 1])
 			this->students[i]->setInstructor(nullptr);
-	delete this->instructors[num - 1];
-	this->instructors.erase(this->instructors.begin() + (num - 1));
+	*this -= num;
 }
 
 void DrivingSchool::adminAddS() {
-	std::string newName = "Lady", newSurname = "Gaga";	//для защиты лр нужен автоввод 
+	std::string newName = "Lady", newSurname = "Gaga";	//для защиты лр нужен автоввод; перегрузка +=
 	int newAge = 17, newCategoryNum = 2;
 
 	system("cls");
@@ -227,11 +241,11 @@ void DrivingSchool::adminAddS() {
 	Categories newCategory = static_cast<Categories>(newCategoryNum);
 
 	Student* newStudent = new Student(newName, newSurname, newAge, newCategory, nullptr);
-	this->registrStudent(newStudent);
+	*this += newStudent;
 	std::cout << "\nRegistration successful! " << std::endl;
 }
 void DrivingSchool::adminAddI() {
-	std::string newName = "Ryan", newSurname = "Gosling";	//для защиты лр нужен автоввод
+	std::string newName = "Ryan", newSurname = "Gosling";	//для защиты лр нужен автоввод; перегрузка +=
 	int newAge = 22, newCategoryNum = 2, newExp = 3;
 	int answer = 2;
 
@@ -269,10 +283,18 @@ void DrivingSchool::adminAddI() {
 			std::cout << "Invalid input!" << std::endl;
 		}
 	}
-	this->registrInstructor(newInstructor);
+	*this += newInstructor;	
 	std::cout << "\nRegistration successful! " << std::endl;
 }
-
+void DrivingSchool::printAllStud() {
+	if (this->students.empty())
+		std::cout << "The student database is currently empty." << std::endl;
+	else {
+		std::cout << "\n--ACTIVE STUDENT LIST--\n" << std::endl;
+		for (int i = 0; i < students.size(); i++)
+			std::cout << *this->students[i];
+	}
+}
 void DrivingSchool::admin() {
 	int choice, way1, way2;
 	bool question = true;
@@ -289,21 +311,26 @@ void DrivingSchool::admin() {
 			system("cls");
 			std::cout << "!YOU LOGGED IN AS AN ADMINISTRATOR!" << std::endl;
 			std::cout << "------------------------------------" << std::endl;
-			std::cout << "1. Delete student.\n2. Add student.\nYour choice: ";
+			std::cout << "1. View the student's information.\n2. Delete student.\n3. Add student.\nYour choice: ";
 			std::cin >> way1;
 			switch (way1) {
 			case 1: {
-				this->adminDelS();
+				this->printAllStud();
 				system("pause");
 				system("cls");
 				break;
 			}
 			case 2: {
-				this->adminAddS();
+				this->adminDelS();
 				system("pause");
 				system("cls");
 				break;
 			}
+			case 3:
+				this->adminAddS();
+				system("pause");
+				system("cls");
+				break;
 			}
 			break;
 		}
@@ -448,18 +475,18 @@ void test(DrivingSchool& school) {		//тестовые для лр
 	Student* s7 = new Student("Kurt", "Cobain", 27, AM, i1);
 	Student* s8 = new Student("Vivienne", "Westwood", 17, C, i4);
 
-	school.registrInstructor(i1);
-	school.registrInstructor(i2);
-	school.registrInstructor(i3);
-	school.registrInstructor(i4);
-	school.registrInstructor(i5);
-	school.registrInstructor(i6);
-	school.registrStudent(s1);
-	school.registrStudent(s2);
-	school.registrStudent(s3);
-	school.registrStudent(s4);
-	school.registrStudent(s5);
-	school.registrStudent(s6);
-	school.registrStudent(s7);
-	school.registrStudent(s8);
+	school += i1;
+	school += i2;
+	school += i3;
+	school += i4;
+	school += i5;
+	school += i6;
+	school += s1;
+	school += s2;
+	school += s3;
+	school += s4;
+	school += s5;
+	school += s6;
+	school += s7;
+	school += s8;
 }
