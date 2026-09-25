@@ -445,6 +445,7 @@ void menu(DrivingSchool& school) {
 		case 5: {
 			  std::cout << "Program successfully completed.\n";
 			  toDo = false;
+			  break;
 		}
 		default:
 			std::cout << "Exit!";
