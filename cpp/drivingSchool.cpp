@@ -40,8 +40,17 @@ DrivingSchool& DrivingSchool::operator+=(Student* stud) {
 	this->students.push_back(stud);
 	return *this;
 }
+DrivingSchool& DrivingSchool::operator-=(int index) {
+	if (index<0 || index>students.size()) {
+		std::cout << "Invalid student index!";
+		return *this;
+	}
+	delete this->students[index - 1];
+	this->students.erase(this->students.begin() + (index - 1));
+	return *this;
+}
 
-void defining(DrivingSchool& school, Student* stud) {	//реализация friend
+void defining(DrivingSchool& school, Student* stud) {	
 	std::vector<Instructor*> suitableInstr;
 	int choice = 0;
 
@@ -138,7 +147,7 @@ void DrivingSchool::profile(Student* stud) {
 	}
 }
 
-void DrivingSchool::findStudent() {			//перегрузка >>, ==
+void DrivingSchool::findStudent() {		
 	std::string myName, mySurname;	
 	Student* found = nullptr;
 	Student other("", "", 0, Categories::AM, nullptr);
@@ -171,15 +180,6 @@ void DrivingSchool::findStudent() {			//перегрузка >>, ==
 	}
 
 }
-DrivingSchool& DrivingSchool::operator-=(int index) {	//перегрузка -=
-	if (index<0 || index>students.size()) {
-		std::cout << "Invalid student index!";
-		return *this;
-	}
-	delete this->students[index - 1];
-	this->students.erase(this->students.begin() + (index - 1));
-	return *this;
-}
 
 void DrivingSchool::adminDelS() {
 	int num;
@@ -194,7 +194,7 @@ void DrivingSchool::adminDelS() {
 	*this -= num;
 }
 
-void DrivingSchool::adminDelI() {	//перегрузка -=
+void DrivingSchool::adminDelI() {	
 	int num;
 
 	system("cls");
@@ -211,7 +211,7 @@ void DrivingSchool::adminDelI() {	//перегрузка -=
 }
 
 void DrivingSchool::adminAddS() {
-	std::string newName = "Lady", newSurname = "Gaga";	//для защиты лр нужен автоввод; перегрузка +=
+	std::string newName = "Lady", newSurname = "Gaga";	
 	int newAge = 17, newCategoryNum = 2;
 
 	system("cls");
@@ -245,7 +245,7 @@ void DrivingSchool::adminAddS() {
 	std::cout << "\nRegistration successful! " << std::endl;
 }
 void DrivingSchool::adminAddI() {
-	std::string newName = "Ryan", newSurname = "Gosling";	//для защиты лр нужен автоввод; перегрузка +=
+	std::string newName = "Ryan", newSurname = "Gosling";	
 	int newAge = 22, newCategoryNum = 2, newExp = 3;
 	int answer = 2;
 
@@ -378,7 +378,7 @@ void DrivingSchool::printAllInstr() {
 	system("pause");
 }
 
-void DrivingSchool::statistics() {		//перегрузка >, <, <<
+void DrivingSchool::statistics() {		
 	system("cls");
 	if (this->instructors.empty()) {
 		std::cout << "The instructor database is currently empty. Statistics unavailable." << std::endl;
