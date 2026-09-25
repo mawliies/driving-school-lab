@@ -447,6 +447,7 @@ void menu(DrivingSchool& school) {
 			  toDo = false;
 		}
 		default:
+			std::cout << "Exit!";
 			break;
 		}
 	}
