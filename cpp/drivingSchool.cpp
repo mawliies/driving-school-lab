@@ -1,3 +1,4 @@
+#include "person.h"
 #include "drivingSchool.h"
 #include "instructor.h"
 #include "student.h"
@@ -40,32 +41,48 @@ DrivingSchool& DrivingSchool::operator+=(Student* stud) {
 	this->students.push_back(stud);
 	return *this;
 }
-DrivingSchool& DrivingSchool::operator-=(int index) {
-	if (index<0 || index>students.size()) {
-		std::cout << "Invalid student index!";
+DrivingSchool& DrivingSchool::operator-=(Student* stud) {
+	if (stud == nullptr)
 		return *this;
+	for (auto it = students.begin(); it != students.end(); ++it) {
+		if (*it == stud)
+		{
+			delete* it;
+			this->students.erase(it);
+			break;
+		}
 	}
-	delete this->students[index - 1];
-	this->students.erase(this->students.begin() + (index - 1));
 	return *this;
 }
-
+DrivingSchool& DrivingSchool::operator-=(Instructor* instr) {
+	if (instr == nullptr)
+		return *this;
+	for (auto it = instructors.begin(); it != instructors.end(); ++it) {
+		if (*it == instr)
+		{
+			delete* it;
+			this->instructors.erase(it);
+			break;
+		}
+	}
+	return *this;
+}
 void defining(DrivingSchool& school, Student* stud) {	
 	std::vector<Instructor*> suitableInstr;
 	int choice = 0;
 
 	for (int i = 0; i < school.instructors.size(); i++)
-		if (school.instructors[i]->hasCategory(stud->myCategory))
+		if (school.instructors[i]->hasCategory(stud->getMyCategory()))
 			suitableInstr.push_back(school.instructors[i]);
 
 	if (suitableInstr.empty()) {
-		std::cout << "No suitable instructor found for student " << stud->name << " " << stud->surname << "." << std::endl;
+		std::cout << "No suitable instructor found for student " << stud->getName() << " " << stud->getSurname() << "." << std::endl;
 		return;
 	}
 
-	std::cout << "\n-- Available instructors for " << ctgToString(stud->myCategory) << " --\n" << std::endl;
+	std::cout << "\n-- Available instructors for " << ctgToString(stud->getMyCategory()) << " --\n" << std::endl;
 	for (int i = 0; i < suitableInstr.size(); i++)
-		std::cout << i + 1 << ". " << suitableInstr[i]->name << " " << suitableInstr[i]->surname << ". (Experience: " << suitableInstr[i]->drivingExp << " years).\n" << std::endl;
+		std::cout << i + 1 << ". " << suitableInstr[i]->getName() << " " << suitableInstr[i]->getSurname() << ". (Experience: " << suitableInstr[i]->getExp() << " years).\n" << std::endl;
 
 	std::cout << "Enter the number of the selected instructor (0 to cancel): ";
 	std::cin >> choice;
@@ -191,7 +208,8 @@ void DrivingSchool::adminDelS() {
 		std::cout << i + 1 << ". " << students[i]->getName() << " " << students[i]->getSurname() << std::endl;
 	std::cout << "Enter student number: ";
 	std::cin >> num;
-	*this -= num;
+	if (num > 0 && num < students.size())
+		*this -= students[num-1];
 }
 
 void DrivingSchool::adminDelI() {	
@@ -204,10 +222,14 @@ void DrivingSchool::adminDelI() {
 		std::cout << i + 1 << ". " << instructors[i]->getName() << " " << instructors[i]->getSurname() << std::endl;
 	std::cout << "Enter instructor number: ";
 	std::cin >> num;
-	for (int i = 0; i < students.size(); i++)
-		if (this->students[i]->getInstructor() != nullptr && this->students[i]->getInstructor() == this->instructors[num - 1])
-			this->students[i]->setInstructor(nullptr);
-	*this -= num;
+	if (num > 0 && num < instructors.size()) {
+		Instructor* toDel = instructors[num - 1];
+		for (int i = 0; i < students.size(); i++)
+			if (this->students[i]->getInstructor() != nullptr && this->students[i]->getInstructor() == this->instructors[num - 1])
+				this->students[i]->setInstructor(nullptr);
+		*this -= toDel;
+	}
+		
 }
 
 void DrivingSchool::adminAddS() {

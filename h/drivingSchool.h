@@ -19,7 +19,8 @@ public:
 
 	DrivingSchool& operator+=(Student* stud);
 	DrivingSchool& operator+=(Instructor* instr);
-	DrivingSchool& operator-=(int index);
+	DrivingSchool& operator-=(Student* stud);
+	DrivingSchool& operator-=(Instructor* stud);
 	friend void defining(DrivingSchool& school, Student* stud);
 	void registration();
 	void profile(Student* stud);

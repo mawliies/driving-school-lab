@@ -1,18 +1,13 @@
 #include "instructor.h"
 #include "drivingSchool.h"
+#include "student.h"
 
-Instructor::Instructor(std::string name, std::string surname, int age, int drivingExp, Categories ctg) {
+Instructor::Instructor(std::string name, std::string surname, int age, int drivingExp, Categories ctg) :Person(name, surname, age) {
 	this->name = name;
 	this->surname = surname;
 	this->age = age;
 	this->drivingExp = drivingExp;
 	this->allowedCategory.push_back(ctg);
-}
-std::string Instructor::getName() {
-	return this->name;
-}
-std::string Instructor::getSurname() {
-	return this->surname;
 }
 int Instructor::getExp() {
 	return this->drivingExp;
@@ -38,9 +33,8 @@ bool Instructor::operator>(const Instructor& other)const {
 	return(this->drivingExp > other.drivingExp);
 }
 bool Instructor::operator<(const Instructor& other)const {
-	return(this->age <= other.age);
+	return(this->drivingExp <= other.age);
 }
-
 Instructor::~Instructor() {
 	std::cout << "Instructor " << this->name << " " << this->surname << " has been deleted." << std::endl;
 }

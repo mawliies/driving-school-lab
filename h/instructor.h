@@ -1,25 +1,20 @@
 #pragma once
+#include "person.h"
 #include <string>
 #include <vector>
 #include <iostream>
-class Student;
 
+class Student;
 class DrivingSchool;
 enum Categories;
 
-class Instructor {
+class Instructor :public Person {
 private:
-	std::string name;
-	std::string surname;
-	int age;
 	int drivingExp;
 	std::vector<Categories> allowedCategory;
-	friend void defining(DrivingSchool& school, Student* stud);
 public:
 	Instructor(std::string name, std::string surname, int age, int drivingExp, Categories ctg);
 
-	std::string getName();
-	std::string getSurname();
 	int getExp();
 	void addCategory(Categories owned);
 	bool hasCategory(Categories ctg);

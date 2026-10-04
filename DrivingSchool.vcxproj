@@ -22,11 +22,13 @@
     <ClCompile Include="cpp\drivingSchool.cpp" />
     <ClCompile Include="cpp\instructor.cpp" />
     <ClCompile Include="cpp\main.cpp" />
+    <ClCompile Include="cpp\person.cpp" />
     <ClCompile Include="cpp\student.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="h\drivingSchool.h" />
     <ClInclude Include="h\instructor.h" />
+    <ClInclude Include="h\person.h" />
     <ClInclude Include="h\student.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

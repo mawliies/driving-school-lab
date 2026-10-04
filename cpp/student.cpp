@@ -2,21 +2,12 @@
 #include "instructor.h"
 #include "drivingSchool.h"
 
-Student::Student(std::string name, std::string surname, int age, Categories myCategory, Instructor* myInstructor) {
+Student::Student(std::string name, std::string surname, int age, Categories myCategory, Instructor* myInstructor) :Person(name, surname, age) {
 	this->name = name;
 	this->surname = surname;
 	this->age = age;
 	this->myCategory = myCategory;
 	this->myInstructor = myInstructor;
-}
-std::string Student::getName() {
-	return this->name;
-}
-std::string Student::getSurname() {
-	return this->surname;
-}
-int Student::getAge() {
-	return this->age;
 }
 Categories Student::getMyCategory() {
 	return this->myCategory;
