@@ -15,7 +15,7 @@ private:
 public:
 	Instructor(std::string name, std::string surname, int age, int drivingExp, Categories ctg);
 
-	int getExp();
+	int getExp()const;
 	void addCategory(Categories owned);
 	bool hasCategory(Categories ctg);
 

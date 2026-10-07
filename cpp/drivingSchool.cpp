@@ -2,6 +2,7 @@
 #include "drivingSchool.h"
 #include "instructor.h"
 #include "student.h"
+#include "admin.h"
 
 std::string ctgToString(Categories ctg) {
 	switch (ctg) {
@@ -23,9 +24,10 @@ std::string ctgToString(Categories ctg) {
 	return "Error! Retry.";
 }
 
-DrivingSchool::DrivingSchool(Instructor* instr, Student* stud) {
+DrivingSchool::DrivingSchool(Instructor* instr, Student* stud, Admin* adm) {
 	if (instr != nullptr) this->instructors.push_back(instr);
 	if (stud != nullptr) this->students.push_back(stud);
+	if (adm != nullptr) this->admins.push_back(adm);
 }
 
 DrivingSchool& DrivingSchool::operator+=(Instructor* instr) {
@@ -41,6 +43,12 @@ DrivingSchool& DrivingSchool::operator+=(Student* stud) {
 	this->students.push_back(stud);
 	return *this;
 }
+DrivingSchool& DrivingSchool::operator+=(Admin* adm) {
+	if (adm == nullptr)
+		return *this;
+	this->admins.push_back(adm);
+	return *this;
+}
 DrivingSchool& DrivingSchool::operator-=(Student* stud) {
 	if (stud == nullptr)
 		return *this;
@@ -48,7 +56,7 @@ DrivingSchool& DrivingSchool::operator-=(Student* stud) {
 		if (*it == stud)
 		{
 			delete* it;
-			this->students.erase(it);
+			students.erase(it);
 			break;
 		}
 	}
@@ -61,7 +69,7 @@ DrivingSchool& DrivingSchool::operator-=(Instructor* instr) {
 		if (*it == instr)
 		{
 			delete* it;
-			this->instructors.erase(it);
+			instructors.erase(it);
 			break;
 		}
 	}
@@ -198,196 +206,6 @@ void DrivingSchool::findStudent() {
 
 }
 
-void DrivingSchool::adminDelS() {
-	int num;
-
-	system("cls");
-	std::cout << "!YOU LOGGED IN AS AN ADMINISTRATOR!" << std::endl;
-	std::cout << "------------------------------------" << std::endl;
-	for (int i = 0; i < students.size(); i++)
-		std::cout << i + 1 << ". " << students[i]->getName() << " " << students[i]->getSurname() << std::endl;
-	std::cout << "Enter student number: ";
-	std::cin >> num;
-	if (num > 0 && num < students.size())
-		*this -= students[num-1];
-}
-
-void DrivingSchool::adminDelI() {	
-	int num;
-
-	system("cls");
-	std::cout << "!YOU LOGGED IN AS AN ADMINISTRATOR!" << std::endl;
-	std::cout << "------------------------------------" << std::endl;
-	for (int i = 0; i < instructors.size(); i++)
-		std::cout << i + 1 << ". " << instructors[i]->getName() << " " << instructors[i]->getSurname() << std::endl;
-	std::cout << "Enter instructor number: ";
-	std::cin >> num;
-	if (num > 0 && num < instructors.size()) {
-		Instructor* toDel = instructors[num - 1];
-		for (int i = 0; i < students.size(); i++)
-			if (this->students[i]->getInstructor() != nullptr && this->students[i]->getInstructor() == this->instructors[num - 1])
-				this->students[i]->setInstructor(nullptr);
-		*this -= toDel;
-	}
-		
-}
-
-void DrivingSchool::adminAddS() {
-	std::string newName = "Lady", newSurname = "Gaga";	
-	int newAge = 17, newCategoryNum = 2;
-
-	system("cls");
-	std::cout << "!YOU LOGGED IN AS AN ADMINISTRATOR!" << std::endl;
-	std::cout << "------------------------------------" << std::endl;
-	std::cout << "Enter student's first and last name: " << std::endl;
-	std::cout << "[AUTO] " << newName << " " << newSurname << "." << std::endl;
-	std::cout << "\nEnter student's age: " << std::endl;
-	std::cout << "[AUTO] " << newAge << "." << std::endl;
-	if (newAge < 16) {							
-		std::cout << "\nRegistration failed: Student must be at least 16 years old to register!" << std::endl;
-		std::cout << "--------------------------------" << std::endl;
-		return;
-	}
-	std::cout << "\nEnter student's desired license category (0-AM, 1-A, 2-B, 3-C, 4-D, 5-F, 6-I): " << std::endl;
-	std::cout << "[AUTO] " << newCategoryNum << "." << std::endl;
-	if (((newAge < 18 && newAge >= 16) && newCategoryNum != 1)) {
-		std::cout << "\nRegistration failed: You can register this student only on license category AM!" << std::endl;
-		std::cout << "--------------------------------" << std::endl;
-		return;
-	}
-	if (((newAge >= 18 && newAge < 21) && newCategoryNum >= 4)) {
-		std::cout << "\nRegistration failed: You can't register this student on D, F, I license categories!" << std::endl;
-		std::cout << "--------------------------------" << std::endl;
-		return;
-	}
-	Categories newCategory = static_cast<Categories>(newCategoryNum);
-
-	Student* newStudent = new Student(newName, newSurname, newAge, newCategory, nullptr);
-	*this += newStudent;
-	std::cout << "\nRegistration successful! " << std::endl;
-}
-void DrivingSchool::adminAddI() {
-	std::string newName = "Ryan", newSurname = "Gosling";	
-	int newAge = 22, newCategoryNum = 2, newExp = 3;
-	int answer = 2;
-
-	system("cls");
-	std::cout << "!YOU LOGGED IN AS AN ADMINISTRATOR!" << std::endl;
-	std::cout << "------------------------------------" << std::endl;
-	std::cout << "Enter instructor's first and last name: " << std::endl;
-	std::cout << "[AUTO] " << newName << " " << newSurname << "." << std::endl;
-	std::cout << "\nEnter instructor's age: " << std::endl;
-	std::cout << "[AUTO] " << newAge << "." << std::endl;
-	std::cout << "\nEnter instructor's experience: " << std::endl;
-	std::cout << "[AUTO] " << newExp << "." << std::endl;
-	std::cout << "\nEnter instructor's initial license category (0-AM, 1-A, 2-B, 3-C, 4-D, 5-F, 6-I): " << std::endl;
-	std::cout << "[AUTO] " << newCategoryNum << "." << std::endl;
-	Categories newCategory = static_cast<Categories>(newCategoryNum);
-
-	Instructor* newInstructor = new Instructor(newName, newSurname, newAge, newExp, newCategory);
-	bool add = true;
-	while (add) {
-		std::cout << "Does the instructor have more categories?\n1. Yes.\n2. No." << std::endl;
-		std::cout << "[AUTO] " << answer << "." << std::endl;
-		switch (answer) {
-		case 1: {		
-			std::cout << "Enter category number (0-AM, 1-A, 2-B, 3-C, 4-D, 5-F, 6-I): ";
-			std::cin >> newCategoryNum;
-			Categories newCategory = static_cast<Categories>(newCategoryNum);
-			newInstructor->addCategory(newCategory);
-			std::cout << "Category added!" << std::endl;
-			break;
-		}
-		case 2:
-			add = false;
-			break;
-		default:
-			std::cout << "Invalid input!" << std::endl;
-		}
-	}
-	*this += newInstructor;	
-	std::cout << "\nRegistration successful! " << std::endl;
-}
-void DrivingSchool::printAllStud() {
-	if (this->students.empty())
-		std::cout << "The student database is currently empty." << std::endl;
-	else {
-		std::cout << "\n--ACTIVE STUDENT LIST--\n" << std::endl;
-		for (int i = 0; i < students.size(); i++)
-			std::cout << *this->students[i];
-	}
-}
-void DrivingSchool::admin() {
-	int choice, way1, way2;
-	bool question = true;
-
-	system("cls");
-	while (question)
-	{
-		std::cout << "!YOU LOGGED IN AS AN ADMINISTRATOR!" << std::endl;
-		std::cout << "------------------------------------" << std::endl;
-		std::cout << "1. Operations on students\n2. Operations on instructors.\n3. Exit the admin menu.\nSelect an option: ";
-		std::cin >> choice;
-		switch (choice) {
-		case 1: {
-			system("cls");
-			std::cout << "!YOU LOGGED IN AS AN ADMINISTRATOR!" << std::endl;
-			std::cout << "------------------------------------" << std::endl;
-			std::cout << "1. View the student's information.\n2. Delete student.\n3. Add student.\nYour choice: ";
-			std::cin >> way1;
-			switch (way1) {
-			case 1: {
-				this->printAllStud();
-				system("pause");
-				system("cls");
-				break;
-			}
-			case 2: {
-				this->adminDelS();
-				system("pause");
-				system("cls");
-				break;
-			}
-			case 3:
-				this->adminAddS();
-				system("pause");
-				system("cls");
-				break;
-			}
-			break;
-		}
-		case 2: {
-			system("cls");
-			std::cout << "!YOU LOGGED IN AS AN ADMINISTRATOR!" << std::endl;
-			std::cout << "------------------------------------" << std::endl;
-			std::cout << "1. Delete instructor.\n2. Add instructor.\nYour choice: ";
-			std::cin >> way2;
-			switch (way2) {
-			case 1: {
-				this->adminDelI();
-				system("pause");
-				system("cls");
-				break;
-			}
-			case 2: {
-				this->adminAddI();
-				system("pause");
-				system("cls");
-				break;
-			}
-			}
-			break;
-		}
-		default:
-			question = false;
-			std::cout << "\nYou exited from admin menu or chosed wrong answer.\n" << std::endl;
-			system("pause");
-			system("cls");
-			break;
-		}
-	}
-}
-
 void DrivingSchool::printAllInstr() {		
 	system("cls");
 	if (this->instructors.empty())
@@ -428,13 +246,41 @@ void DrivingSchool::statistics() {
 	system("pause");
 }
 
+void DrivingSchool::loginAdmin() {	
+	system("cls");
+	int pass = 0;
+	int num = 0;
+	std::cout << "==================================================" << std::endl;
+	std::cout << "                 LOGIN AS ADMIN                   " << std::endl;
+	std::cout << "==================================================" << std::endl;
+	std::cout << "ADMIN LIST:\n";
+	for (int i = 0; i < admins.size(); i++) 
+		std::cout << "#" << i + 1 << ". Name: " << admins[i]->getName() << "\nSurname: " << admins[i]->getSurname() << "\nAge: " << admins[i]->getAge() << "\n-----------------\n";
+	std::cout << "\nENTER CHOICE\n";
+	std::cin >> num;
+	std::cout << "\nENTER SPECIAL ADMIN PASSWORD: ";
+	std::cin >> pass;
+	if (this->admins[num - 1]->truePassword(pass)) {
+		std::cout << "\nCorrect password! Welcome!\n";
+		system("pause");
+		this->admins[num - 1]->admin(*this);
+	}
+	else {
+		std::cout << "\nWrong password! Request declined\n";
+		system("pause");
+	}
+		
+}
 DrivingSchool::~DrivingSchool() {
 	for (int i = 0; i < instructors.size(); i++)
 		delete this->instructors[i];
 	this->instructors.clear();
 	for (int i = 0; i < students.size(); i++)
 		delete this->students[i];
-	this->students.clear();
+	this->admins.clear();
+	for (int i = 0; i < admins.size(); i++)
+		delete this->admins[i];
+	this->admins.clear();
 	std::cout << "\nAll memory has been successfully freed." << std::endl;
 }
 
@@ -453,7 +299,7 @@ void menu(DrivingSchool& school) {
 			break;
 		}
 		case 2: {
-			school.admin();
+			school.loginAdmin();
 			break;
 		}
 		case 3: {
@@ -499,6 +345,10 @@ void test(DrivingSchool& school) {		//тестовые для лр
 	Student* s7 = new Student("Kurt", "Cobain", 27, AM, i1);
 	Student* s8 = new Student("Vivienne", "Westwood", 17, C, i4);
 
+	Admin* a1 = new Admin("Irina", "Skiba", 25, 12345);
+	Admin* a2 = new Admin("Roman", "Molchanov", 32, 52520);
+	Admin* a3 = new Admin("Giga", "Chad", 43, 70766);
+
 	school += i1;
 	school += i2;
 	school += i3;
@@ -513,4 +363,7 @@ void test(DrivingSchool& school) {		//тестовые для лр
 	school += s6;
 	school += s7;
 	school += s8;
+	school += a1;
+	school += a2;
+	school += a3;
 }

@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="cpp\admin.cpp" />
     <ClCompile Include="cpp\drivingSchool.cpp" />
     <ClCompile Include="cpp\instructor.cpp" />
     <ClCompile Include="cpp\main.cpp" />
@@ -26,6 +27,7 @@
     <ClCompile Include="cpp\student.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="h\admin.h" />
     <ClInclude Include="h\drivingSchool.h" />
     <ClInclude Include="h\instructor.h" />
     <ClInclude Include="h\person.h" />

@@ -3,9 +3,6 @@
 #include "drivingSchool.h"
 
 Student::Student(std::string name, std::string surname, int age, Categories myCategory, Instructor* myInstructor) :Person(name, surname, age) {
-	this->name = name;
-	this->surname = surname;
-	this->age = age;
 	this->myCategory = myCategory;
 	this->myInstructor = myInstructor;
 }
@@ -19,10 +16,10 @@ void Student::setInstructor(Instructor* instr) {
 	this->myInstructor = instr;
 }
 bool Student::operator==(const Student& other)const {
-	return(this->name == other.name && this->surname == other.surname);
+	return(this->name == other.getName() && this->surname == other.getSurname());
 }
 std::ostream& operator<<(std::ostream& os, Student& stud) {
-	os << "Student: " << stud.name << " " << stud.surname << ".\nAge: " << stud.age << ".\nDesired category: " << ctgToString(stud.myCategory) << ".\nAssigned instructor: ";
+	os << "Student: " << stud.getName() << " " << stud.getSurname() << ".\nAge: " << stud.getAge() << ".\nDesired category: " << ctgToString(stud.myCategory) << ".\nAssigned instructor: ";
 	if (stud.myInstructor != nullptr)
 		os << stud.myInstructor->getName() << " " << stud.myInstructor->getSurname() << "." << std::endl;
 	else
@@ -31,8 +28,10 @@ std::ostream& operator<<(std::ostream& os, Student& stud) {
 	return os;
 }
 std::istream& operator>>(std::istream& is, Student& stud) {
-	is >> stud.name;
-	is >> stud.surname;
+	std::string tempName, tempSurname;
+	is >> tempName >> tempSurname;
+	stud.name = tempName;
+	stud.surname = tempSurname;
 	return is;
 }
 Student::~Student() {
