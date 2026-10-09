@@ -10,19 +10,17 @@ enum Categories;
 
 class Instructor :public Person {
 private:
-	int drivingExp;
+	int drivingExperience;
 	std::vector<Categories> allowedCategory;
 public:
-	Instructor(std::string name, std::string surname, int age, int drivingExp, Categories ctg);
+	Instructor(std::string name, std::string surname, int age, int drivingExperience, Categories category);
 
-	int getExp()const;
+	int getExperience()const;
 	void addCategory(Categories owned);
 	bool hasCategory(Categories ctg);
-
 	bool operator>(const Instructor& other)const;
 	bool operator<(const Instructor& other)const;
-
-	friend std::ostream& operator<<(std::ostream& os, const Instructor& instr);
+	friend std::ostream& operator<<(std::ostream& os, const Instructor& instructor);
 
 	~Instructor();
 };

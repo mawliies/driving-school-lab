@@ -12,11 +12,11 @@ public:
 	int getPassword();
 	bool truePassword(int pass);
 	void admin(DrivingSchool& school);
-	void adminDelS(DrivingSchool& school);
-	void adminDelI(DrivingSchool& school);
-	void adminAddS(DrivingSchool& school);
-	void adminAddI(DrivingSchool& school);
-	void printAllStud(DrivingSchool& school);
+	void DeleteStudent(DrivingSchool& school);
+	void DeleteInstructor(DrivingSchool& school);
+	void AddStudent(DrivingSchool& school);
+	void AddInstructor(DrivingSchool& school);
+	void printAllStudents(DrivingSchool& school);
 
 	~Admin();
 };

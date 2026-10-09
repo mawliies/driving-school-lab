@@ -12,5 +12,6 @@ public:
 	std::string getName()const;
 	std::string getSurname()const;
 	int getAge()const;
+
 	~Person();
 };

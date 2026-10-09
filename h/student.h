@@ -8,16 +8,15 @@ enum Categories;
 
 class Student : public Person{
 private:
-	Categories myCategory;
-	Instructor* myInstructor;
+	Categories category;
+	Instructor* instructor;
 public:
-	Student(std::string name, std::string surname, int age, Categories myCategory, Instructor* myInstructor = nullptr);
+	Student(std::string name, std::string surname, int age, Categories category, Instructor* instructor = nullptr);
 
-	Categories getMyCategory();
+	Categories getCategory();
 	Instructor* getInstructor();
-
 	bool operator==(const Student& other)const;
-
+	bool hasInstructor(Instructor* instr);
 	void setInstructor(Instructor* instr);
 	friend std::istream& operator>>(std::istream& is,Student & stud);
 	friend std::ostream& operator<<(std::ostream& os, Student& stud);

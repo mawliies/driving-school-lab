@@ -43,12 +43,14 @@ DrivingSchool& DrivingSchool::operator+=(Student* stud) {
 	this->students.push_back(stud);
 	return *this;
 }
+
 DrivingSchool& DrivingSchool::operator+=(Admin* adm) {
 	if (adm == nullptr)
 		return *this;
 	this->admins.push_back(adm);
 	return *this;
 }
+
 DrivingSchool& DrivingSchool::operator-=(Student* stud) {
 	if (stud == nullptr)
 		return *this;
@@ -62,6 +64,7 @@ DrivingSchool& DrivingSchool::operator-=(Student* stud) {
 	}
 	return *this;
 }
+
 DrivingSchool& DrivingSchool::operator-=(Instructor* instr) {
 	if (instr == nullptr)
 		return *this;
@@ -75,27 +78,55 @@ DrivingSchool& DrivingSchool::operator-=(Instructor* instr) {
 	}
 	return *this;
 }
+
+bool checkAge(int age, int newCategoryNum) {
+	if (age < 16) {
+		std::cout << "\nRegistration failed: Student must be at least 16 years old to register!" << std::endl;
+		std::cout << "--------------------------------" << std::endl;
+		return false;
+	}
+	std::cout << "\nEnter student's desired license category (0-AM, 1-A, 2-B, 3-C, 4-D, 5-F, 6-I): " << std::endl;
+	std::cout << "[AUTO] " << newCategoryNum << "." << std::endl;
+	if (((age < 18 && age >= 16) && newCategoryNum != 1)) {
+		std::cout << "\nRegistration failed: You can register this student only on license category AM!" << std::endl;
+		std::cout << "--------------------------------" << std::endl;
+		return false;
+	}
+	if (((age >= 18 && age < 21) && newCategoryNum >= 4)) {
+		std::cout << "\nRegistration failed: You can't register this student on D, F, I license categories!" << std::endl;
+		std::cout << "--------------------------------" << std::endl;
+		return false;
+	}
+	return true;
+}
+
 void defining(DrivingSchool& school, Student* stud) {	
-	std::vector<Instructor*> suitableInstr;
+	std::vector<Instructor*> suitableInstructor;
 	int choice = 0;
 
 	for (int i = 0; i < school.instructors.size(); i++)
-		if (school.instructors[i]->hasCategory(stud->getMyCategory()))
-			suitableInstr.push_back(school.instructors[i]);
+		if (school.instructors[i]->hasCategory(stud->getCategory()))
+			suitableInstructor.push_back(school.instructors[i]);
 
-	if (suitableInstr.empty()) {
+	if (suitableInstructor.empty()) {
 		std::cout << "No suitable instructor found for student " << stud->getName() << " " << stud->getSurname() << "." << std::endl;
 		return;
 	}
-
-	std::cout << "\n-- Available instructors for " << ctgToString(stud->getMyCategory()) << " --\n" << std::endl;
-	for (int i = 0; i < suitableInstr.size(); i++)
-		std::cout << i + 1 << ". " << suitableInstr[i]->getName() << " " << suitableInstr[i]->getSurname() << ". (Experience: " << suitableInstr[i]->getExp() << " years).\n" << std::endl;
+	for (int i = 0; i < suitableInstructor.size(); i++) {
+		if (stud->hasInstructor(suitableInstructor[i])) {
+			std::cout << "\nInstructor is already assigned to this student.\n";
+			system("pause");
+			return;
+		}
+	}
+	std::cout << "\n-- Available instructors for " << ctgToString(stud->getCategory()) << " --\n" << std::endl;
+	for (int i = 0; i < suitableInstructor.size(); i++)
+		std::cout << i + 1 << ". " << suitableInstructor[i]->getName() << " " << suitableInstructor[i]->getSurname() << ". (Experience: " << suitableInstructor[i]->getExperience() << " years).\n" << std::endl;
 
 	std::cout << "Enter the number of the selected instructor (0 to cancel): ";
 	std::cin >> choice;
-	if (choice > 0 && choice <= suitableInstr.size()) {
-		stud->setInstructor(suitableInstr[choice - 1]);
+	if (choice > 0 && choice <= suitableInstructor.size()) {
+		stud->setInstructor(suitableInstructor[choice - 1]);
 		std::cout << "Congratulations! The instructor has been assigned." << std::endl;
 	}
 	else
@@ -114,23 +145,10 @@ void DrivingSchool::registration() {
 	std::cin >> newSurname;
 	std::cout << "\nEnter your age: " << std::endl;
 	std::cin >> newAge;
-	if (newAge < 16) {
-		std::cout << "\nRegistration failed: You must be at least 16 years old to register!" << std::endl;
-		std::cout << "--------------------------------" << std::endl;
-		return;
-	}
 	std::cout << "\nEnter your desired license category (0-AM, 1-A, 2-B, 3-C, 4-D, 5-F, 6-I): " << std::endl;
 	std::cin >> newCategoryNum;
-	if (((newAge < 18 && newAge >= 16) && newCategoryNum != 1)) {
-		std::cout << "\nRegistration failed: You can register only on license category AM!" << std::endl;
-		std::cout << "--------------------------------" << std::endl;
+	if (!checkAge(newAge, newCategoryNum))
 		return;
-	}
-	if (((newAge >= 18 && newAge < 21) && newCategoryNum >= 4)) {
-		std::cout << "\nRegistration failed: You can't register on D, F, I license categories!" << std::endl;
-		std::cout << "--------------------------------" << std::endl;
-		return;
-	}
 	Categories newCategory = static_cast<Categories>(newCategoryNum);
 
 	Student* newStudent = new Student(newName, newSurname, newAge, newCategory, nullptr);
@@ -271,6 +289,7 @@ void DrivingSchool::loginAdmin() {
 	}
 		
 }
+
 DrivingSchool::~DrivingSchool() {
 	for (int i = 0; i < instructors.size(); i++)
 		delete this->instructors[i];
