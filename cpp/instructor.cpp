@@ -21,13 +21,15 @@ bool Instructor::hasCategory(Categories ctg) {
 			return true;
 	return false;
 }
-
+void Instructor::printInfo()const {
+	Person::printInfo();
+	std::cout << "\nDriving experience: " << drivingExperience << ".\nOwned categories: ";
+	for (int i = 0; i < allowedCategory.size(); i++)
+		std::cout << ctgToString(allowedCategory[i]) << " ";
+	std::cout << "\n--------------------------------\n";
+}
 std::ostream& operator<<(std::ostream& os, const Instructor& instr) {
-	os << "Instructor: " << instr.getName() << " " << instr.getSurname() << ".\nAge: " << instr.age << ".\nDriving experience: " << instr.getExperience() << " years.\nAuthorized for categories: ";
-	for (int i = 0; i < instr.allowedCategory.size(); i++)
-		os << ctgToString(instr.allowedCategory[i]) << " ";
-	os << "\n--------------------------------\n";
-
+	instr.printInfo();
 	return os;
 }
 
@@ -38,7 +40,13 @@ bool Instructor::operator>(const Instructor& other)const {
 bool Instructor::operator<(const Instructor& other)const {
 	return(this->drivingExperience < other.getExperience());
 }
+std::string Instructor::getType()const {
+	return "Instructor";
+}
 
+void Instructor::specific()const {
+	//?
+}
 Instructor::~Instructor() {
 	std::cout << "Instructor " << this->name << " " << this->surname << " has been deleted." << std::endl;
 }

@@ -28,23 +28,33 @@ bool Student::hasInstructor(Instructor* instr) {
 		return true;
 	return false;
 }
-
-std::ostream& operator<<(std::ostream& os, Student& stud) {
-	os << "Student: " << stud.getName() << " " << stud.getSurname() << ".\nAge: " << stud.getAge() << ".\nDesired category: " << ctgToString(stud.category) << ".\nAssigned instructor: ";
-	if (stud.instructor != nullptr)
-		os << stud.instructor->getName() << " " << stud.instructor->getSurname() << "." << std::endl;
+void Student::printInfo()const {
+	Person::printInfo();
+	std::cout << "\nDesired category: " << ctgToString(category)<<"\nInstructor: ";
+	if (instructor != nullptr)
+		std::cout << instructor->getName() << " " << instructor->getSurname() << "." << std::endl;
 	else
-		os << "not assigned." << std::endl;
-	os << "--------------------------------" << std::endl;
+		std::cout << "Instructor is not assigned." << std::endl;
+	std::cout << "--------------------------------" << std::endl;
+}
+std::ostream& operator<<(std::ostream& os, Student& stud) {
+	stud.printInfo();
 	return os;
 }
 
 std::istream& operator>>(std::istream& is, Student& stud) {
 	std::string tempName, tempSurname;
 	is >> tempName >> tempSurname;
-	stud.name = tempName;
-	stud.surname = tempSurname;
+	stud.setName(tempName);
+	stud.setSurname(tempSurname);
 	return is;
+}
+std::string Student:: getType()const {
+	return "Student";
+}
+
+void Student::specific()const {
+	//?
 }
 
 Student::~Student() {

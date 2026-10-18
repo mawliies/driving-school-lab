@@ -21,6 +21,9 @@ public:
 	bool operator>(const Instructor& other)const;
 	bool operator<(const Instructor& other)const;
 	friend std::ostream& operator<<(std::ostream& os, const Instructor& instructor);
+	std::string getType()const override;
+	void printInfo()const override;
+	void specific()const override;
 
 	~Instructor();
 };

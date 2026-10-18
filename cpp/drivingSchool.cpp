@@ -24,55 +24,23 @@ std::string ctgToString(Categories ctg) {
 	return "Error! Retry.";
 }
 
-DrivingSchool::DrivingSchool(Instructor* instr, Student* stud, Admin* adm) {
-	if (instr != nullptr) this->instructors.push_back(instr);
-	if (stud != nullptr) this->students.push_back(stud);
-	if (adm != nullptr) this->admins.push_back(adm);
-}
+DrivingSchool::DrivingSchool() {}
 
-DrivingSchool& DrivingSchool::operator+=(Instructor* instr) {
-	if (instr == nullptr)
+DrivingSchool& DrivingSchool::operator+=(Person* newMember) {
+	if (newMember == nullptr)
 		return *this;
-	this->instructors.push_back(instr);
+	this->members.push_back(newMember);
 	return *this;
 }
 
-DrivingSchool& DrivingSchool::operator+=(Student* stud) {
-	if (stud == nullptr)
+DrivingSchool& DrivingSchool::operator-=(Person* newMember) {
+	if (newMember == nullptr)
 		return *this;
-	this->students.push_back(stud);
-	return *this;
-}
-
-DrivingSchool& DrivingSchool::operator+=(Admin* adm) {
-	if (adm == nullptr)
-		return *this;
-	this->admins.push_back(adm);
-	return *this;
-}
-
-DrivingSchool& DrivingSchool::operator-=(Student* stud) {
-	if (stud == nullptr)
-		return *this;
-	for (auto it = students.begin(); it != students.end(); ++it) {
-		if (*it == stud)
+	for (auto it = members.begin(); it != members.end(); ++it) {
+		if (*it == newMember)
 		{
 			delete* it;
-			students.erase(it);
-			break;
-		}
-	}
-	return *this;
-}
-
-DrivingSchool& DrivingSchool::operator-=(Instructor* instr) {
-	if (instr == nullptr)
-		return *this;
-	for (auto it = instructors.begin(); it != instructors.end(); ++it) {
-		if (*it == instr)
-		{
-			delete* it;
-			instructors.erase(it);
+			members.erase(it);
 			break;
 		}
 	}
@@ -104,10 +72,12 @@ void defining(DrivingSchool& school, Student* stud) {
 	std::vector<Instructor*> suitableInstructor;
 	int choice = 0;
 
-	for (int i = 0; i < school.instructors.size(); i++)
-		if (school.instructors[i]->hasCategory(stud->getCategory()))
-			suitableInstructor.push_back(school.instructors[i]);
-
+	for (int i = 0; i < school.members.size(); i++)
+		if (school.members[i]->getType() == "Instructor") {
+			Instructor* instructor = static_cast<Instructor*>(school.members[i]);
+			if(instructor->hasCategory(stud->getCategory()))
+				suitableInstructor.push_back(instructor);
+		}
 	if (suitableInstructor.empty()) {
 		std::cout << "No suitable instructor found for student " << stud->getName() << " " << stud->getSurname() << "." << std::endl;
 		return;
@@ -199,10 +169,13 @@ void DrivingSchool::findStudent() {
 	std::cout << "\nTo log into your personal profile, enter your first and last name:\n" << std::endl;
 	std::cin >> other;	
 
-	for (int i = 0; i < students.size(); i++)
-		if (*(this->students[i])==other) {	
-			found = this->students[i];
-			break;
+	for (int i = 0; i < members.size(); i++)
+		if (members[i]->getType() == "Student") {
+			Student* student = static_cast<Student*>(members[i]);
+			if (*student == other) {
+				found = student;
+				break;
+			}
 		}
 	if (found != nullptr) {
 		system("cls");
@@ -226,62 +199,77 @@ void DrivingSchool::findStudent() {
 
 void DrivingSchool::printAllInstr() {		
 	system("cls");
-	if (this->instructors.empty())
+	bool empty = true;
+	std::cout << "--ACTIVE INSTRUCTOR ROSTER--\n" << std::endl;
+	for (int i = 0; i < members.size(); i++)
+		if (members[i]->getType() == "Instructor") {
+			members[i]->printInfo();
+			empty = false;
+		}
+	if(empty)
 		std::cout << "The instructor database is currently empty." << std::endl;
-	else {
-		std::cout << "--ACTIVE INSTRUCTOR ROSTER--\n" << std::endl;
-		for (int i = 0; i < instructors.size(); i++)
-			std::cout << *this->instructors[i];
-	}
 	system("pause");
 }
 
 void DrivingSchool::statistics() {		
 	system("cls");
-	if (this->instructors.empty()) {
+	bool empty = true;
+	std::vector<Instructor*> current;
+	for (int i = 0; i < members.size(); i++) {
+		if (members[i]->getType() == "Instructor")
+			current.push_back(static_cast<Instructor*>(members[i]));
+	}
+	if (current.empty()) {
 		std::cout << "The instructor database is currently empty. Statistics unavailable." << std::endl;
 		system("pause");
 		return;
 	}
 
-	Instructor* best = this->instructors[0];
-	Instructor* young = this->instructors[0];
+	Instructor* best = current[0];
+	Instructor* young = current[0];
+	for (int i = 0; i < current.size(); i++) {
+		if (*current[i] > *best)
+			best = current[i];
+		if (*current[i] < *young)
+			young = current[i];
+	}
 	std::cout << "==================================================" << std::endl;
 	std::cout << "           DRIVING SCHOOL STATISTICS              " << std::endl;
 	std::cout << "==================================================" << std::endl;
-	for (int i = 0; i < instructors.size(); i++) {
-		if (i != 0){
-			if (*(this->instructors[i]) > *best)
-				best = this->instructors[i];
-			if (*(this->instructors[i]) < *young)
-				young = this->instructors[i];
-		}
-	}
-	std::cout << "\n--THE INSTRUCTOR OF THE YEAR--\n";
-	std::cout << *best;
-	std::cout << "\n--THE YOUNGEST WORKER WITH GREAT POTENTIAL--\n";
-	std::cout << *young;
+	std::cout << "\n--THE INSTRUCTOR OF THE YEAR--\n" << *best;
+	std::cout << "\n--THE YOUNGEST WORKER WITH GREAT POTENTIAL--\n" << *young;
 	system("pause");
 }
 
 void DrivingSchool::loginAdmin() {	
 	system("cls");
+	std::vector<Admin*>current;
 	int pass = 0;
 	int num = 0;
+	
+	for (int i = 0; i < members.size(); i++)
+		if (members[i]->getType() == "Administrator")
+			current.push_back(static_cast<Admin*>(members[i]));
+		
+	if (current.empty()) {
+		std::cout << "No current admins!.\n";
+		system("pause");
+		return;
+	}
 	std::cout << "==================================================" << std::endl;
 	std::cout << "                 LOGIN AS ADMIN                   " << std::endl;
 	std::cout << "==================================================" << std::endl;
 	std::cout << "ADMIN LIST:\n";
-	for (int i = 0; i < admins.size(); i++) 
-		std::cout << "#" << i + 1 << ". Name: " << admins[i]->getName() << "\nSurname: " << admins[i]->getSurname() << "\nAge: " << admins[i]->getAge() << "\n-----------------\n";
+	for (int i = 0; i < current.size(); i++)
+		std::cout << "#" << i + 1 << ". Name: " << current[i]->getName() << "\nSurname: " << current[i]->getSurname() << "\nAge: " << current[i]->getAge() << "\n-----------------\n";
 	std::cout << "\nENTER CHOICE\n";
 	std::cin >> num;
 	std::cout << "\nENTER SPECIAL ADMIN PASSWORD: ";
 	std::cin >> pass;
-	if (this->admins[num - 1]->truePassword(pass)) {
+	if (current[num - 1]->truePassword(pass) && num > 0 && num <= current.size()) {
 		std::cout << "\nCorrect password! Welcome!\n";
 		system("pause");
-		this->admins[num - 1]->admin(*this);
+		current[num - 1]->admin(*this);
 	}
 	else {
 		std::cout << "\nWrong password! Request declined\n";
@@ -291,15 +279,9 @@ void DrivingSchool::loginAdmin() {
 }
 
 DrivingSchool::~DrivingSchool() {
-	for (int i = 0; i < instructors.size(); i++)
-		delete this->instructors[i];
-	this->instructors.clear();
-	for (int i = 0; i < students.size(); i++)
-		delete this->students[i];
-	this->admins.clear();
-	for (int i = 0; i < admins.size(); i++)
-		delete this->admins[i];
-	this->admins.clear();
+	for (int i = 0; i < members.size(); i++)
+		delete this->members[i];
+	this->members.clear();
 	std::cout << "\nAll memory has been successfully freed." << std::endl;
 }
 
@@ -358,7 +340,7 @@ void test(DrivingSchool& school) {		//тестовые для лр
 	Student* s1 = new Student("Daria", "Zhvirblya", 19, A, nullptr);
 	Student* s2 = new Student("Jane", "Dou", 25, C, nullptr);
 	Student* s3 = new Student("Walter", "White", 51, D, i3);
-	Student* s4 = new Student("Peter", "Parker", 15, AM, nullptr);
+	Student* s4 = new Student("Peter", "Parker", 16, AM, nullptr);
 	Student* s5 = new Student("Dexter", "Morgan", 33, B, i6);
 	Student* s6 = new Student("Nana", "Osaki", 21, F, nullptr);
 	Student* s7 = new Student("Kurt", "Cobain", 27, AM, i1);

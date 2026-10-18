@@ -11,7 +11,12 @@ public:
 
 	std::string getName()const;
 	std::string getSurname()const;
+	void setName(std::string name);
+	void setSurname(std::string surname);
 	int getAge()const;
+	virtual std::string getType()const = 0;
+	virtual void printInfo()const;
+	virtual void specific()const = 0;
 
-	~Person();
+	virtual ~Person();
 };

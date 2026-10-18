@@ -18,35 +18,46 @@ bool Admin::truePassword(int pass) {
 
 void Admin::DeleteStudent(DrivingSchool& school) {
 	int num;
+	std::vector<Student*>current;
 	system("cls");
 	std::cout << "!YOU LOGGED IN AS AN ADMINISTRATOR!" << std::endl;
 	std::cout << "------------------------------------" << std::endl;
-	for (int i = 0; i < school.students.size(); i++)
-		std::cout << i + 1 << ". " << school.students[i]->getName() << " " << school.students[i]->getSurname() << std::endl;
+	for (int i = 0; i < school.members.size(); i++)
+		if (school.members[i]->getType() == "Student")
+			current.push_back(static_cast<Student*>(school.members[i]));
+	for (int i = 0; i < current.size(); i++)
+		std::cout << i + 1 << ". " << current[i]->getName() << " " << current[i]->getSurname() << std::endl;
 	std::cout << "Enter student number: ";
 	std::cin >> num;
-	if (num > 0 && num <= school.students.size())
-		school -= school.students[num - 1];
+	if (num > 0 && num <= current.size())
+		school -= current[num - 1];
 }
 
 void Admin::DeleteInstructor(DrivingSchool& school) {
 	int num;
-
+	std::vector<Instructor*>current;
 	system("cls");
 	std::cout << "!YOU LOGGED IN AS AN ADMINISTRATOR!" << std::endl;
 	std::cout << "------------------------------------" << std::endl;
-	for (int i = 0; i < school.instructors.size(); i++)
-		std::cout << i + 1 << ". " << school.instructors[i]->getName() << " " << school.instructors[i]->getSurname() << std::endl;
+	for (int i = 0; i < school.members.size(); i++)
+		if (school.members[i]->getType() == "Instructor")
+			current.push_back(static_cast<Instructor*>(school.members[i]));
+	for (int i = 0; i < current.size(); i++)
+		std::cout << i + 1 << ". " << current[i]->getName() << " " << current[i]->getSurname() << std::endl;
 	std::cout << "Enter instructor number: ";
 	std::cin >> num;
-	if (num > 0 && num <= school.instructors.size()) {
-		Instructor* toDel = school.instructors[num - 1];
-		for (int i = 0; i < school.students.size(); i++)
-			if (school.students[i]->getInstructor() != nullptr && school.students[i]->getInstructor() == toDel)
-				school.students[i]->setInstructor(nullptr);
+	if (num > 0 && num <= current.size()) {
+		Instructor* toDel = current[num - 1];
+		for (int i = 0; i < school.members.size(); i++)
+			if (school.members[i]->getType() == "Student") {
+				Student* students = static_cast<Student*>(school.members[i]);
+				if (students->getInstructor() == toDel)
+					students->setInstructor(nullptr);
+			}
 		school -= toDel;
+		std::cout << "Instructor successfully deleted.\n";
 	}
-
+	system("pause");
 }
 
 void Admin::AddStudent(DrivingSchool& school) {
@@ -111,13 +122,16 @@ void Admin::AddInstructor(DrivingSchool& school) {
 }
 
 void Admin::printAllStudents(DrivingSchool& school) {
-	if (school.students.empty())
+	bool empty = true;
+	std::cout << "\n--ACTIVE STUDENT LIST--\n" << std::endl;
+	for (int i = 0; i < school.members.size(); i++)
+		if (school.members[i]->getType() == "Student")
+		{
+			school.members[i]->printInfo();
+			empty = false;
+		}
+	if (empty)
 		std::cout << "The student database is currently empty." << std::endl;
-	else {
-		std::cout << "\n--ACTIVE STUDENT LIST--\n" << std::endl;
-		for (int i = 0; i < school.students.size(); i++)
-			std::cout << *school.students[i];
-	}
 }
 
 void Admin::admin(DrivingSchool& school) {
@@ -190,7 +204,16 @@ void Admin::admin(DrivingSchool& school) {
 		}
 	}
 }
-
+std::string Admin::getType()const {
+	return "Administrator";
+}
+void Admin::printInfo()const {
+	Person::printInfo();
+	std::cout << "\nAccess level: System administrator.\n--------------------------\n";
+}
+void Admin::specific()const {
+	//?
+}
 Admin::~Admin() {
 	std::cout << "Admin " << this->name << " " << this->surname << "has been deleted.\n";
 }

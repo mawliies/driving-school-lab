@@ -2,6 +2,7 @@
 #include <string>
 #include <vector>
 #include <iostream>
+class Person;
 class Instructor;
 class Student;
 class Admin;
@@ -12,18 +13,13 @@ std::string ctgToString(Categories ctg);
 
 class DrivingSchool {
 private:
-	std::vector<Instructor*> instructors;
-	std::vector<Student*> students;
-	std::vector<Admin*> admins;
-public:
-	DrivingSchool(Instructor* instr = nullptr, Student* stud = nullptr, Admin* adm = nullptr);
-
+	std::vector<Person*>members;
 	friend class Admin;
-	DrivingSchool& operator+=(Student* stud);
-	DrivingSchool& operator+=(Instructor* instr);
-	DrivingSchool& operator+=(Admin* adm);
-	DrivingSchool& operator-=(Student* stud);
-	DrivingSchool& operator-=(Instructor* instr);
+public:
+	DrivingSchool();
+	
+	DrivingSchool& operator+=(Person* newMember);
+	DrivingSchool& operator-=(Person* newMember);
 	friend void defining(DrivingSchool& school, Student* stud);
 	void registration();
 	void profile(Student* stud);
@@ -31,7 +27,7 @@ public:
 	void printAllInstr();
 	void loginAdmin();
 	void statistics();
-
+	//void demonstrateDutes()
 	~DrivingSchool();
 };
 

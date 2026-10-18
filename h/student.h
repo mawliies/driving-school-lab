@@ -20,6 +20,8 @@ public:
 	void setInstructor(Instructor* instr);
 	friend std::istream& operator>>(std::istream& is,Student & stud);
 	friend std::ostream& operator<<(std::ostream& os, Student& stud);
-
+	std::string getType()const override;
+	void printInfo()const override;
+	void specific()const override;
 	~Student();
 };

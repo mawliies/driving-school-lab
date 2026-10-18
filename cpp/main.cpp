@@ -1,7 +1,7 @@
 #include "drivingSchool.h"
 
 int main() {
-	DrivingSchool school(nullptr, nullptr);
+	DrivingSchool school;
 	test(school);
 	menu(school);
 	return 0;
