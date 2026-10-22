@@ -16,7 +16,7 @@ public:
 	int getAge()const;
 	virtual std::string getType()const = 0;
 	virtual void printInfo()const;
-	virtual void specific()const = 0;
-
+	virtual void financialCalculations()const = 0;
+	
 	virtual ~Person();
 };

@@ -22,6 +22,8 @@ public:
 	friend std::ostream& operator<<(std::ostream& os, Student& stud);
 	std::string getType()const override;
 	void printInfo()const override;
-	void specific()const override;
+	void financialCalculations()const override;
+	void showFinancialReport(float basePrice, float discount, float markup, float finalPrice)const;
+
 	~Student();
 };

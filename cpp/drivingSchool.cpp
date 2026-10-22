@@ -344,7 +344,7 @@ void test(DrivingSchool& school) {		//тестовые для лр
 	Student* s5 = new Student("Dexter", "Morgan", 33, B, i6);
 	Student* s6 = new Student("Nana", "Osaki", 21, F, nullptr);
 	Student* s7 = new Student("Kurt", "Cobain", 27, AM, i1);
-	Student* s8 = new Student("Vivienne", "Westwood", 17, C, i4);
+	Student* s8 = new Student("Vivienne", "Westwood", 17, AM, i4);
 
 	Admin* a1 = new Admin("Irina", "Skiba", 25, 12345);
 	Admin* a2 = new Admin("Roman", "Molchanov", 32, 52520);

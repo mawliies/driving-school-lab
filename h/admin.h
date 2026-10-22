@@ -17,9 +17,10 @@ public:
 	void AddStudent(DrivingSchool& school);
 	void AddInstructor(DrivingSchool& school);
 	void printAllStudents(DrivingSchool& school);
+	void instructorCheck(DrivingSchool& school);
 	std::string getType()const override;
 	void printInfo()const override;
-	void specific()const override;
+	void financialCalculations()const override;
 
 	~Admin();
 };

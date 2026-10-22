@@ -1,6 +1,7 @@
 #include "student.h"
 #include "instructor.h"
 #include "drivingSchool.h"
+#include <iomanip>
 
 Student::Student(std::string name, std::string surname, int age, Categories category, Instructor* instructor) :Person(name, surname, age) {
 	this->category = category;
@@ -28,6 +29,38 @@ bool Student::hasInstructor(Instructor* instr) {
 		return true;
 	return false;
 }
+void Student::showFinancialReport(float basePrice, float discount, float markup, float finalPrice)const {
+	std::cout << std::fixed << std::setprecision(2);
+	std::cout << "==================================================\n";
+	std::cout << "         FINANCIAL RECEIPT FOR STUDENT            \n";
+	std::cout << "==================================================\n";
+	std::cout << "Base Price: $" << basePrice << "\n";
+	if (discount > 0) std::cout << "Age Discount (Under 18): -$" << discount << "\n";
+	if (markup > 0)   std::cout << "Category/Instructor Markups: +$" << markup << "\n";
+	std::cout << "--------------------------------------------------\n";
+	std::cout << "TOTAL TUITION FEES: $" << finalPrice << "\n";
+	std::cout << "==================================================\n\n\n\n";
+}
+
+void Student::financialCalculations()const {
+	float basePrice = 499.99;
+	float discount = 0, markup = 0, finalPrice = 0;
+
+	if (this->age < 18)
+		discount = basePrice * 0.20;
+	if (this->instructor != nullptr) {
+		if (this->instructor->getExperience() >= 20)
+			markup += 50.00;
+		else if (this->instructor->getExperience() >= 10 && this->instructor->getExperience() < 20)
+			markup += 100.00;
+	}
+	if (this->category == Categories::C || this->category == Categories::D)
+		markup += 70.00;
+	else if (this->category == Categories::F || this->category == Categories::I)
+		markup += 100.00;
+	finalPrice = basePrice - discount + markup;
+	showFinancialReport(basePrice, discount, markup, finalPrice);
+}
 void Student::printInfo()const {
 	Person::printInfo();
 	std::cout << "\nDesired category: " << ctgToString(category)<<"\nInstructor: ";
@@ -35,7 +68,8 @@ void Student::printInfo()const {
 		std::cout << instructor->getName() << " " << instructor->getSurname() << "." << std::endl;
 	else
 		std::cout << "Instructor is not assigned." << std::endl;
-	std::cout << "--------------------------------" << std::endl;
+	std::cout << "";
+	financialCalculations();
 }
 std::ostream& operator<<(std::ostream& os, Student& stud) {
 	stud.printInfo();
@@ -53,9 +87,6 @@ std::string Student:: getType()const {
 	return "Student";
 }
 
-void Student::specific()const {
-	//?
-}
 
 Student::~Student() {
 	std::cout << "Student " << this->name << " " << this->surname << " has been deleted." << std::endl;

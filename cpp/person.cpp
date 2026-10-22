@@ -23,7 +23,7 @@ void Person::setSurname(std::string surname) {
 	this->surname = surname;
 }
 void Person::printInfo() const {
-	std::cout << "Name: " << name << " " << surname << ".\nAge: " << age << ".\n";
+	std::cout << "Name: " << name << " " << surname << ".\nAge: " << age << ".";
 }
 
 Person::~Person() {

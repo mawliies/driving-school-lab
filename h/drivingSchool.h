@@ -27,7 +27,7 @@ public:
 	void printAllInstr();
 	void loginAdmin();
 	void statistics();
-	//void demonstrateDutes()
+
 	~DrivingSchool();
 };
 

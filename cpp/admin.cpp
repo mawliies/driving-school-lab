@@ -133,7 +133,17 @@ void Admin::printAllStudents(DrivingSchool& school) {
 	if (empty)
 		std::cout << "The student database is currently empty." << std::endl;
 }
-
+void Admin::instructorCheck(DrivingSchool& school) {
+	bool empty = true;
+	for (int i = 0; i < school.members.size(); i++)
+		if (school.members[i]->getType() == "Instructor")
+		{
+			school.members[i]->financialCalculations();
+			empty = false;
+		}
+	if (empty)
+		std::cout << "The instructor database is currently empty." << std::endl;
+}
 void Admin::admin(DrivingSchool& school) {
 	int choice, way1, way2;
 	bool question = true;
@@ -177,7 +187,7 @@ void Admin::admin(DrivingSchool& school) {
 			system("cls");
 			std::cout << "!YOU LOGGED IN AS AN ADMINISTRATOR!" << std::endl;
 			std::cout << "------------------------------------" << std::endl;
-			std::cout << "1. Delete instructor.\n2. Add instructor.\nYour choice: ";
+			std::cout << "1. Delete instructor.\n2. Add instructor.\n3.Check instructors's salary.\nYour choice: ";
 			std::cin >> way2;
 			switch (way2) {
 			case 1: {
@@ -188,6 +198,12 @@ void Admin::admin(DrivingSchool& school) {
 			}
 			case 2: {
 				this->AddInstructor(school);
+				system("pause");
+				system("cls");
+				break;
+			}
+			case 3: {
+				this->instructorCheck(school);
 				system("pause");
 				system("cls");
 				break;
@@ -211,8 +227,8 @@ void Admin::printInfo()const {
 	Person::printInfo();
 	std::cout << "\nAccess level: System administrator.\n--------------------------\n";
 }
-void Admin::specific()const {
-	//?
+void Admin::financialCalculations()const {
+	return;
 }
 Admin::~Admin() {
 	std::cout << "Admin " << this->name << " " << this->surname << "has been deleted.\n";
