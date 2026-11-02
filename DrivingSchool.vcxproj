@@ -28,6 +28,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="h\admin.h" />
+    <ClInclude Include="h\Collection.h" />
     <ClInclude Include="h\drivingSchool.h" />
     <ClInclude Include="h\instructor.h" />
     <ClInclude Include="h\person.h" />

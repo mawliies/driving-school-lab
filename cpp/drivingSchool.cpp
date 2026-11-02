@@ -260,13 +260,15 @@ void DrivingSchool::loginAdmin() {
 	std::cout << "                 LOGIN AS ADMIN                   " << std::endl;
 	std::cout << "==================================================" << std::endl;
 	std::cout << "ADMIN LIST:\n";
-	for (int i = 0; i < current.size(); i++)
-		std::cout << "#" << i + 1 << ". Name: " << current[i]->getName() << "\nSurname: " << current[i]->getSurname() << "\nAge: " << current[i]->getAge() << "\n-----------------\n";
+	for (int i = 0; i < current.size(); i++) {
+		std::cout << "#" << i + 1 << ". ";
+		current[i]->printInfo();
+	}
 	std::cout << "\nENTER CHOICE\n";
 	std::cin >> num;
 	std::cout << "\nENTER SPECIAL ADMIN PASSWORD: ";
 	std::cin >> pass;
-	if (current[num - 1]->truePassword(pass) && num > 0 && num <= current.size()) {
+	if ((num > 0 && num <= current.size()) && current[num - 1]->truePassword(pass)) {
 		std::cout << "\nCorrect password! Welcome!\n";
 		system("pause");
 		current[num - 1]->admin(*this);
