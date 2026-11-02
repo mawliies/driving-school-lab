@@ -3,6 +3,7 @@
 #include "instructor.h"
 #include "student.h"
 #include "admin.h"
+#include "Collection.h"
 
 std::string ctgToString(Categories ctg) {
 	switch (ctg) {
@@ -69,34 +70,34 @@ bool checkAge(int age, int newCategoryNum) {
 }
 
 void defining(DrivingSchool& school, Student* stud) {	
-	std::vector<Instructor*> suitableInstructor;
+	Collection<Instructor*> suitableInstructor;
 	int choice = 0;
 
 	for (int i = 0; i < school.members.size(); i++)
 		if (school.members[i]->getType() == "Instructor") {
 			Instructor* instructor = static_cast<Instructor*>(school.members[i]);
 			if(instructor->hasCategory(stud->getCategory()))
-				suitableInstructor.push_back(instructor);
+				suitableInstructor.add(instructor);
 		}
-	if (suitableInstructor.empty()) {
+	if (suitableInstructor.getSize() == 0) {
 		std::cout << "No suitable instructor found for student " << stud->getName() << " " << stud->getSurname() << "." << std::endl;
 		return;
 	}
-	for (int i = 0; i < suitableInstructor.size(); i++) {
-		if (stud->hasInstructor(suitableInstructor[i])) {
+	for (int i = 0; i < suitableInstructor.getSize(); i++) {
+		if (stud->hasInstructor(suitableInstructor.get(i))) {
 			std::cout << "\nInstructor is already assigned to this student.\n";
 			system("pause");
 			return;
 		}
 	}
 	std::cout << "\n-- Available instructors for " << ctgToString(stud->getCategory()) << " --\n" << std::endl;
-	for (int i = 0; i < suitableInstructor.size(); i++)
-		std::cout << i + 1 << ". " << suitableInstructor[i]->getName() << " " << suitableInstructor[i]->getSurname() << ". (Experience: " << suitableInstructor[i]->getExperience() << " years).\n" << std::endl;
+	for (int i = 0; i < suitableInstructor.getSize(); i++)
+		std::cout << i + 1 << ". " << suitableInstructor.get(i)->getName() << " " << suitableInstructor.get(i)->getSurname() << ". (Experience: " << suitableInstructor.get(i)->getExperience() << " years).\n" << std::endl;
 
 	std::cout << "Enter the number of the selected instructor (0 to cancel): ";
 	std::cin >> choice;
-	if (choice > 0 && choice <= suitableInstructor.size()) {
-		stud->setInstructor(suitableInstructor[choice - 1]);
+	if (choice > 0 && choice <= suitableInstructor.getSize()) {
+		stud->setInstructor(suitableInstructor.get(choice - 1));
 		std::cout << "Congratulations! The instructor has been assigned." << std::endl;
 	}
 	else
@@ -214,24 +215,24 @@ void DrivingSchool::printAllInstr() {
 void DrivingSchool::statistics() {		
 	system("cls");
 	bool empty = true;
-	std::vector<Instructor*> current;
+	Collection<Instructor*> current;
 	for (int i = 0; i < members.size(); i++) {
 		if (members[i]->getType() == "Instructor")
-			current.push_back(static_cast<Instructor*>(members[i]));
+			current.add(static_cast<Instructor*>(members[i]));
 	}
-	if (current.empty()) {
+	if (current.getSize() == 0) {
 		std::cout << "The instructor database is currently empty. Statistics unavailable." << std::endl;
 		system("pause");
 		return;
 	}
 
-	Instructor* best = current[0];
-	Instructor* young = current[0];
-	for (int i = 0; i < current.size(); i++) {
-		if (*current[i] > *best)
-			best = current[i];
-		if (*current[i] < *young)
-			young = current[i];
+	Instructor* best = current.get(0);
+	Instructor* young = current.get(0);
+	for (int i = 0; i < current.getSize(); i++) {
+		if (*current.get(i) > *best)
+			best = current.get(i);
+		if (*current.get(i) < *young)
+			young = current.get(i);
 	}
 	std::cout << "==================================================" << std::endl;
 	std::cout << "           DRIVING SCHOOL STATISTICS              " << std::endl;
@@ -243,15 +244,15 @@ void DrivingSchool::statistics() {
 
 void DrivingSchool::loginAdmin() {	
 	system("cls");
-	std::vector<Admin*>current;
+	Collection<Admin*>current;
 	int pass = 0;
 	int num = 0;
 	
 	for (int i = 0; i < members.size(); i++)
 		if (members[i]->getType() == "Administrator")
-			current.push_back(static_cast<Admin*>(members[i]));
+			current.add(static_cast<Admin*>(members[i]));
 		
-	if (current.empty()) {
+	if (current.getSize() == 0) {
 		std::cout << "No current admins!.\n";
 		system("pause");
 		return;
@@ -260,18 +261,18 @@ void DrivingSchool::loginAdmin() {
 	std::cout << "                 LOGIN AS ADMIN                   " << std::endl;
 	std::cout << "==================================================" << std::endl;
 	std::cout << "ADMIN LIST:\n";
-	for (int i = 0; i < current.size(); i++) {
+	for (int i = 0; i < current.getSize(); i++) {
 		std::cout << "#" << i + 1 << ". ";
-		current[i]->printInfo();
+		current.get(i)->printInfo();
 	}
 	std::cout << "\nENTER CHOICE\n";
 	std::cin >> num;
 	std::cout << "\nENTER SPECIAL ADMIN PASSWORD: ";
 	std::cin >> pass;
-	if ((num > 0 && num <= current.size()) && current[num - 1]->truePassword(pass)) {
+	if ((num > 0 && num <= current.getSize()) && current.get(num - 1)->truePassword(pass)) {
 		std::cout << "\nCorrect password! Welcome!\n";
 		system("pause");
-		current[num - 1]->admin(*this);
+		current.get(num - 1)->admin(*this);
 	}
 	else {
 		std::cout << "\nWrong password! Request declined\n";

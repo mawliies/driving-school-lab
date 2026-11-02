@@ -2,6 +2,7 @@
 #include "drivingSchool.h"
 #include "student.h"
 #include "instructor.h"
+#include"Collection.h"
 
 Admin::Admin(std::string name, std::string surname, int age, int password) :Person(name, surname, age) {
 	this->password = password;
@@ -18,36 +19,36 @@ bool Admin::truePassword(int pass) {
 
 void Admin::DeleteStudent(DrivingSchool& school) {
 	int num;
-	std::vector<Student*>current;
+	Collection<Student*>current;
 	system("cls");
 	std::cout << "!YOU LOGGED IN AS AN ADMINISTRATOR!" << std::endl;
 	std::cout << "------------------------------------" << std::endl;
 	for (int i = 0; i < school.members.size(); i++)
 		if (school.members[i]->getType() == "Student")
-			current.push_back(static_cast<Student*>(school.members[i]));
-	for (int i = 0; i < current.size(); i++)
-		std::cout << i + 1 << ". " << current[i]->getName() << " " << current[i]->getSurname() << std::endl;
+			current.add(static_cast<Student*>(school.members[i]));
+	for (int i = 0; i < current.getSize(); i++)
+		std::cout << i + 1 << ". " << current.get(i)->getName() << " " << current.get(i)->getSurname() << std::endl;
 	std::cout << "Enter student number: ";
 	std::cin >> num;
-	if (num > 0 && num <= current.size())
-		school -= current[num - 1];
+	if (num > 0 && num <= current.getSize())
+		school -= current.get(num - 1);
 }
 
 void Admin::DeleteInstructor(DrivingSchool& school) {
 	int num;
-	std::vector<Instructor*>current;
+	Collection<Instructor*>current;
 	system("cls");
 	std::cout << "!YOU LOGGED IN AS AN ADMINISTRATOR!" << std::endl;
 	std::cout << "------------------------------------" << std::endl;
 	for (int i = 0; i < school.members.size(); i++)
 		if (school.members[i]->getType() == "Instructor")
-			current.push_back(static_cast<Instructor*>(school.members[i]));
-	for (int i = 0; i < current.size(); i++)
-		std::cout << i + 1 << ". " << current[i]->getName() << " " << current[i]->getSurname() << std::endl;
+			current.add(static_cast<Instructor*>(school.members[i]));
+	for (int i = 0; i < current.getSize(); i++)
+		std::cout << i + 1 << ". " << current.get(i)->getName() << " " << current.get(i)->getSurname() << std::endl;
 	std::cout << "Enter instructor number: ";
 	std::cin >> num;
-	if (num > 0 && num <= current.size()) {
-		Instructor* toDel = current[num - 1];
+	if (num > 0 && num <= current.getSize()) {
+		Instructor* toDel = current.get(num - 1);
 		for (int i = 0; i < school.members.size(); i++)
 			if (school.members[i]->getType() == "Student") {
 				Student* students = static_cast<Student*>(school.members[i]);
