@@ -12,15 +12,41 @@ public:
 		capacity = 0;
 		size = 0;
 	}
-	int getSize() {
+	Collection(const Collection& other) {
+		size = other.size;
+		capacity = other.capacity;
+		if (capacity > 0) {
+			data = new T[capacity];
+			for (int i = 0; i < size; i++)
+				data[i] = other.data[i];
+		}
+		else 
+			data = nullptr;
+	}
+	Collection& operator=(const Collection& other) {
+		if (this != &other) {
+			delete[] data;
+			size = other.size;
+			capacity = other.capacity;
+			if (capacity > 0) {
+				data = new T[capacity];
+				for (int i = 0; i < size; i++)
+					data[i] = other.data[i];
+			}
+			else 
+				data = nullptr;
+		}
+		return *this;
+	}
+	int getSize() const{
 		return size;
 	}
-	T get(int i) {
+	T get(int i) const{
 		return data[i];
 	}
 	void add(const T& item) {
 		if (size == capacity) {
-			int newCapacity = capacity + 1;
+			int newCapacity = (capacity == 0) ? 4 : capacity * 2;
 			T* newData = new T[newCapacity];
 			for (int i = 0; i < size; i++)
 				newData[i] = data[i];
@@ -31,11 +57,18 @@ public:
 		data[size] = item;
 		size++;
 	}
-	int findElement(const Collection<T>& collection, const T& target) {
+	int findElement(const T& target) const{
 		for (int i = 0; i < getSize(); i++)
-			if (collection[i] == target)
+			if (data[i] == target)
 				return i;
 		return -1;
+	}
+	void removeAt(int idx) {
+		if (idx < 0 || idx >= size) 
+			return;
+		for (int i = idx; i < size - 1; i++)
+			data[i] = data[i + 1];
+		size--;
 	}
 	void clear() {
 		delete[]data;
@@ -48,6 +81,16 @@ public:
 			std::cout << data[i] << std::endl;
 	}
 	~Collection() {
-		delete[] data;
-	};
+		clear();
+	}
 };
+template <typename T>
+T findBest(Collection<T>& collection) {
+	if (collection.getSize() == 0)
+		return T();
+	T best = collection.get(0);
+	for (int i = 1; i < collection.getSize(); i++)
+		if (*collection.get(i) > *best)
+			best = collection.get(i);
+	return best;
+}

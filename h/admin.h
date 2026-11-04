@@ -16,6 +16,7 @@ public:
 	void DeleteInstructor(DrivingSchool& school);
 	void AddStudent(DrivingSchool& school);
 	void AddInstructor(DrivingSchool& school);
+	void recomendation(DrivingSchool& school);
 	void printAllStudents(DrivingSchool& school);
 	void instructorCheck(DrivingSchool& school);
 	std::string getType()const override;

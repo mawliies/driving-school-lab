@@ -197,8 +197,7 @@ void DrivingSchool::findStudent() {
 	}
 
 }
-
-void DrivingSchool::printAllInstr() {		
+void DrivingSchool::printAllInstructors() {
 	system("cls");
 	bool empty = true;
 	std::cout << "--ACTIVE INSTRUCTOR ROSTER--\n" << std::endl;
@@ -207,9 +206,59 @@ void DrivingSchool::printAllInstr() {
 			members[i]->printInfo();
 			empty = false;
 		}
-	if(empty)
+	if (empty)
 		std::cout << "The instructor database is currently empty." << std::endl;
 	system("pause");
+}
+void DrivingSchool::information() {
+	system("cls");
+	Collection<std::string>car;
+	car.add("Yamaha YBR 125");
+	car.add("Volkswagen Polo (Manual)");
+	car.add("Renault Logan (Manual)");
+	car.add("Hyundai Accent (Automatic)");
+	car.add("GAZON NEXT");
+	car.add("MAZ-4371 ('Zubrenok')");
+	car.add("Mercedes-Benz Sprinter");
+	car.add("DRILL");
+	car.add("MAZ-203Т");
+	int choice = 0;
+	std::cout << "\n--1. Check instructor's list.\n--2. Check driving school's autopark.\n--3. Search exactly car in autopark.\n";
+	std::cin >> choice;
+	switch (choice) {
+	case 1: {
+		this->printAllInstructors();
+		break;
+	}
+	case 2: {
+		std::cout << "==================================================" << std::endl;
+		std::cout << "             DRIVING SCHOOL AUTOPARK              " << std::endl;
+		std::cout << "==================================================" << std::endl;
+		car.print();
+		std::cout << "==================================================" << std::endl;
+		system("pause");
+		break;
+	}
+	case 3: {
+		system("cls");
+		std::string typing;
+		std::cout << "Type the exactly mark of the car (e.g. Hyundai Accent (Automatic))...\n";
+		std::cin.ignore();
+		std::getline(std::cin, typing);
+		int i = car.findElement(typing);
+		if (i != -1)
+			std::cout << "\n[SUCCESS] Vehicle is AVAILABLE! Check all the autopark information for more details\n";
+		else
+			std::cout<<"\n[NOT FOUND] This vehicle is currently not in our fleet.\n"; 
+		system("pause");
+		break;
+	}
+	break;
+	default:
+		std::cout << "Exit!\n";
+		system("pause");
+		return;
+	}
 }
 
 void DrivingSchool::statistics() {		
@@ -289,15 +338,15 @@ DrivingSchool::~DrivingSchool() {
 }
 
 void menu(DrivingSchool& school) {
-	int choice;
+	int choice1,choice2;
 	bool toDo = true;
 
 	while (toDo) {
 		system("cls");
 		std::cout << "-----------DRIVING SCHOOL-----------" << std::endl;
 		std::cout << "\n--1. Log in as a student.\n--2. Log in as an administrator.\n--3. View general information.\n--4. View statistics.\n--5. Exit program.\n";
-		std::cin >> choice;
-		switch (choice) {
+		std::cin >> choice1;
+		switch (choice1) {
 		case 1: {
 			school.findStudent();
 			break;
@@ -307,7 +356,7 @@ void menu(DrivingSchool& school) {
 			break;
 		}
 		case 3: {
-			school.printAllInstr();
+			school.information();
 			break;
 		}
 		case 4: {

@@ -24,7 +24,8 @@ public:
 	void registration();
 	void profile(Student* stud);
 	void findStudent();
-	void printAllInstr();
+	void printAllInstructors();
+	void information();
 	void loginAdmin();
 	void statistics();
 

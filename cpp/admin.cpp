@@ -30,8 +30,12 @@ void Admin::DeleteStudent(DrivingSchool& school) {
 		std::cout << i + 1 << ". " << current.get(i)->getName() << " " << current.get(i)->getSurname() << std::endl;
 	std::cout << "Enter student number: ";
 	std::cin >> num;
-	if (num > 0 && num <= current.getSize())
-		school -= current.get(num - 1);
+	if (num > 0 && num <= current.getSize()) {
+		Student* toDel = current.get(num - 1);
+		current.removeAt(num - 1);
+		school -= toDel;
+	}
+
 }
 
 void Admin::DeleteInstructor(DrivingSchool& school) {
@@ -55,6 +59,7 @@ void Admin::DeleteInstructor(DrivingSchool& school) {
 				if (students->getInstructor() == toDel)
 					students->setInstructor(nullptr);
 			}
+		current.removeAt(num - 1);
 		school -= toDel;
 		std::cout << "Instructor successfully deleted.\n";
 	}
@@ -121,7 +126,65 @@ void Admin::AddInstructor(DrivingSchool& school) {
 	school += newInstructor;
 	std::cout << "\nRegistration successful! " << std::endl;
 }
+void Admin::recomendation(DrivingSchool& school) {
+	system("cls");
+	Collection<Student*> lonelyStudent;
+	std::cout << "!YOU LOGGED IN AS AN ADMINISTRATOR!" << std::endl;
+	std::cout << "------------------------------------" << std::endl;
+	std::cout << "  INSTRUCTOR RECOMMENDATION SYSTEM  " << std::endl;
+	std::cout << "------------------------------------" << std::endl;
 
+	for (int i = 0; i < school.members.size(); i++) {
+		if (school.members[i]->getType() == "Student") {
+			Student* students = static_cast<Student*>(school.members[i]);
+			if (students->getInstructor() == nullptr)
+				lonelyStudent.add(students);
+		}
+	}
+
+	if (lonelyStudent.getSize() == 0) {
+		std::cout << "\nInstructors are assigned to all students.\n";
+		system("pause");
+		return;
+	}
+	std::cout << "\nFound " << lonelyStudent.getSize() << " students without an instructor.\n";
+	for (int i = 0; i < lonelyStudent.getSize(); i++) {
+		Student* currentStudent = lonelyStudent.get(i);
+		Collection<Instructor*> suitableInstructor;
+
+		for (int k = 0; k < school.members.size(); k++) {
+			if (school.members[k]->getType() == "Instructor") {
+				Instructor* instructor = static_cast<Instructor*>(school.members[k]);
+				if (instructor->hasCategory(currentStudent->getCategory())) {
+					suitableInstructor.add(instructor);
+				}
+			}
+		}
+		std::cout << "\n\n\n------------------------------------";
+		std::cout << "\nStudent: " << currentStudent->getName() << " " << currentStudent->getSurname();
+		std::cout << "\nDesired category: " << ctgToString(currentStudent->getCategory());
+
+		if (suitableInstructor.getSize() == 0) {
+			std::cout << "\nThere are no suitable instructors for this student.\n";
+			continue; 
+		}
+		else {
+			std::cout << "\nThe Instructors for assigning:\n";
+			for (int j = 0; j < suitableInstructor.getSize(); j++) {
+				std::cout << "\nInstructor: " << suitableInstructor.get(j)->getName() << " " << suitableInstructor.get(j)->getSurname();
+				std::cout << "\nDriving experience: " << suitableInstructor.get(j)->getExperience() << " years";
+				std::cout << "\n------------------------------------";
+			}
+			Instructor* best = findBest(suitableInstructor);
+			if (best != nullptr) {
+				std::cout << "\n-->The best candidate for this student: "
+					<< best->getName() << " " << best->getSurname()
+					<< " (Experience: " << best->getExperience() << " years)\n";
+			}
+		}
+	}
+	std::cout << "\n------------------------------------\n";
+}
 void Admin::printAllStudents(DrivingSchool& school) {
 	bool empty = true;
 	std::cout << "\n--ACTIVE STUDENT LIST--\n" << std::endl;
@@ -161,7 +224,7 @@ void Admin::admin(DrivingSchool& school) {
 			system("cls");
 			std::cout << "!YOU LOGGED IN AS AN ADMINISTRATOR!" << std::endl;
 			std::cout << "------------------------------------" << std::endl;
-			std::cout << "1. View the student's information.\n2. Delete student.\n3. Add student.\nYour choice: ";
+			std::cout << "1. View the student's information.\n2. Delete student.\n3. Add student.\n4. Check students without instructors.\nYour choice: ";
 			std::cin >> way1;
 			switch (way1) {
 			case 1: {
@@ -176,11 +239,18 @@ void Admin::admin(DrivingSchool& school) {
 				system("cls");
 				break;
 			}
-			case 3:
+			case 3: {
 				this->AddStudent(school);
 				system("pause");
 				system("cls");
 				break;
+			}
+			case 4: {
+				this->recomendation(school);
+				system("pause");
+				system("cls");
+				break;
+			}
 			}
 			break;
 		}
