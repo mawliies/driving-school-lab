@@ -253,7 +253,6 @@ void DrivingSchool::information() {
 		system("pause");
 		break;
 	}
-	break;
 	default:
 		std::cout << "Exit!\n";
 		system("pause");
