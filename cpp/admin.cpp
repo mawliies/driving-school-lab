@@ -280,6 +280,7 @@ void Admin::admin(DrivingSchool& school) {
 				break;
 			}
 			}
+			break;
 		}
 		default:
 			question = false;
