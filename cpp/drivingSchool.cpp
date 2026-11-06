@@ -3,7 +3,6 @@
 #include "instructor.h"
 #include "student.h"
 #include "admin.h"
-#include "Collection.h"
 
 std::string ctgToString(Categories ctg) {
 	switch (ctg) {
@@ -27,23 +26,24 @@ std::string ctgToString(Categories ctg) {
 
 DrivingSchool::DrivingSchool() {}
 
+Collection<Person*>& DrivingSchool::getMembers() {
+	return this->members;
+}
+
 DrivingSchool& DrivingSchool::operator+=(Person* newMember) {
 	if (newMember == nullptr)
 		return *this;
-	this->members.push_back(newMember);
+	this->members.add(newMember);
 	return *this;
 }
 
 DrivingSchool& DrivingSchool::operator-=(Person* newMember) {
 	if (newMember == nullptr)
 		return *this;
-	for (auto it = members.begin(); it != members.end(); ++it) {
-		if (*it == newMember)
-		{
-			delete* it;
-			members.erase(it);
-			break;
-		}
+	int i = members.findElement(newMember);
+	if (i != -1) {
+		delete members.get(i); 
+		members.removeAt(i);  
 	}
 	return *this;
 }
@@ -73,9 +73,9 @@ void defining(DrivingSchool& school, Student* stud) {
 	Collection<Instructor*> suitableInstructor;
 	int choice = 0;
 
-	for (int i = 0; i < school.members.size(); i++)
-		if (school.members[i]->getType() == "Instructor") {
-			Instructor* instructor = static_cast<Instructor*>(school.members[i]);
+	for (int i = 0; i < school.members.getSize(); i++)
+		if (school.members.get(i)->getType() == "Instructor") {
+			Instructor* instructor = static_cast<Instructor*>(school.members.get(i));
 			if(instructor->hasCategory(stud->getCategory()))
 				suitableInstructor.add(instructor);
 		}
@@ -170,9 +170,9 @@ void DrivingSchool::findStudent() {
 	std::cout << "\nTo log into your personal profile, enter your first and last name:\n" << std::endl;
 	std::cin >> other;	
 
-	for (int i = 0; i < members.size(); i++)
-		if (members[i]->getType() == "Student") {
-			Student* student = static_cast<Student*>(members[i]);
+	for (int i = 0; i < members.getSize(); i++)
+		if (members.get(i)->getType() == "Student") {
+			Student* student = static_cast<Student*>(members.get(i));
 			if (*student == other) {
 				found = student;
 				break;
@@ -201,9 +201,9 @@ void DrivingSchool::printAllInstructors() {
 	system("cls");
 	bool empty = true;
 	std::cout << "--ACTIVE INSTRUCTOR ROSTER--\n" << std::endl;
-	for (int i = 0; i < members.size(); i++)
-		if (members[i]->getType() == "Instructor") {
-			members[i]->printInfo();
+	for (int i = 0; i < members.getSize(); i++)
+		if (members.get(i)->getType() == "Instructor") {
+			members.get(i)->printInfo();
 			empty = false;
 		}
 	if (empty)
@@ -247,9 +247,9 @@ void DrivingSchool::information() {
 		std::getline(std::cin, typing);
 		int i = car.findElement(typing);
 		if (i != -1)
-			std::cout << "\n[SUCCESS] Vehicle is AVAILABLE! Check all the autopark information for more details\n";
+			std::cout << "\n[SUCCESS] Car is AVAILABLE! Check all the autopark information for more details...\n";
 		else
-			std::cout<<"\n[NOT FOUND] This vehicle is currently not in our fleet.\n"; 
+			std::cout<<"\n[NOT FOUND] This car is currently not in our fleet.\n"; 
 		system("pause");
 		break;
 	}
@@ -264,9 +264,9 @@ void DrivingSchool::statistics() {
 	system("cls");
 	bool empty = true;
 	Collection<Instructor*> current;
-	for (int i = 0; i < members.size(); i++) {
-		if (members[i]->getType() == "Instructor")
-			current.add(static_cast<Instructor*>(members[i]));
+	for (int i = 0; i < members.getSize(); i++) {
+		if (members.get(i)->getType() == "Instructor")
+			current.add(static_cast<Instructor*>(members.get(i)));
 	}
 	if (current.getSize() == 0) {
 		std::cout << "The instructor database is currently empty. Statistics unavailable." << std::endl;
@@ -296,9 +296,9 @@ void DrivingSchool::loginAdmin() {
 	int pass = 0;
 	int num = 0;
 	
-	for (int i = 0; i < members.size(); i++)
-		if (members[i]->getType() == "Administrator")
-			current.add(static_cast<Admin*>(members[i]));
+	for (int i = 0; i < members.getSize(); i++)
+		if (members.get(i)->getType() == "Administrator")
+			current.add(static_cast<Admin*>(members.get(i)));
 		
 	if (current.getSize() == 0) {
 		std::cout << "No current admins!.\n";
@@ -330,8 +330,8 @@ void DrivingSchool::loginAdmin() {
 }
 
 DrivingSchool::~DrivingSchool() {
-	for (int i = 0; i < members.size(); i++)
-		delete this->members[i];
+	for (int i = 0; i < members.getSize(); i++)
+		delete this->members.get(i);
 	this->members.clear();
 	std::cout << "\nAll memory has been successfully freed." << std::endl;
 }

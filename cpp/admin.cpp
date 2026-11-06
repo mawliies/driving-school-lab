@@ -23,9 +23,9 @@ void Admin::DeleteStudent(DrivingSchool& school) {
 	system("cls");
 	std::cout << "!YOU LOGGED IN AS AN ADMINISTRATOR!" << std::endl;
 	std::cout << "------------------------------------" << std::endl;
-	for (int i = 0; i < school.members.size(); i++)
-		if (school.members[i]->getType() == "Student")
-			current.add(static_cast<Student*>(school.members[i]));
+	for (int i = 0; i < school.getMembers().getSize(); i++)
+		if (school.getMembers().get(i)->getType() == "Student")
+			current.add(static_cast<Student*>(school.getMembers().get(i)));
 	for (int i = 0; i < current.getSize(); i++)
 		std::cout << i + 1 << ". " << current.get(i)->getName() << " " << current.get(i)->getSurname() << std::endl;
 	std::cout << "Enter student number: ";
@@ -44,18 +44,18 @@ void Admin::DeleteInstructor(DrivingSchool& school) {
 	system("cls");
 	std::cout << "!YOU LOGGED IN AS AN ADMINISTRATOR!" << std::endl;
 	std::cout << "------------------------------------" << std::endl;
-	for (int i = 0; i < school.members.size(); i++)
-		if (school.members[i]->getType() == "Instructor")
-			current.add(static_cast<Instructor*>(school.members[i]));
+	for (int i = 0; i < school.getMembers().getSize(); i++)
+		if (school.getMembers().get(i)->getType() == "Instructor")
+			current.add(static_cast<Instructor*>(school.members.get(i)));
 	for (int i = 0; i < current.getSize(); i++)
 		std::cout << i + 1 << ". " << current.get(i)->getName() << " " << current.get(i)->getSurname() << std::endl;
 	std::cout << "Enter instructor number: ";
 	std::cin >> num;
 	if (num > 0 && num <= current.getSize()) {
 		Instructor* toDel = current.get(num - 1);
-		for (int i = 0; i < school.members.size(); i++)
-			if (school.members[i]->getType() == "Student") {
-				Student* students = static_cast<Student*>(school.members[i]);
+		for (int i = 0; i < school.getMembers().getSize(); i++)
+			if (school.getMembers().get(i)->getType() == "Student") {
+				Student* students = static_cast<Student*>(school.getMembers().get(i));
 				if (students->getInstructor() == toDel)
 					students->setInstructor(nullptr);
 			}
@@ -134,9 +134,9 @@ void Admin::recomendation(DrivingSchool& school) {
 	std::cout << "  INSTRUCTOR RECOMMENDATION SYSTEM  " << std::endl;
 	std::cout << "------------------------------------" << std::endl;
 
-	for (int i = 0; i < school.members.size(); i++) {
-		if (school.members[i]->getType() == "Student") {
-			Student* students = static_cast<Student*>(school.members[i]);
+	for (int i = 0; i < school.getMembers().getSize(); i++) {
+		if (school.getMembers().get(i)->getType() == "Student") {
+			Student* students = static_cast<Student*>(school.getMembers().get(i));
 			if (students->getInstructor() == nullptr)
 				lonelyStudent.add(students);
 		}
@@ -152,9 +152,9 @@ void Admin::recomendation(DrivingSchool& school) {
 		Student* currentStudent = lonelyStudent.get(i);
 		Collection<Instructor*> suitableInstructor;
 
-		for (int k = 0; k < school.members.size(); k++) {
-			if (school.members[k]->getType() == "Instructor") {
-				Instructor* instructor = static_cast<Instructor*>(school.members[k]);
+		for (int k = 0; k < school.getMembers().getSize(); k++) {
+			if (school.getMembers().get(k)->getType() == "Instructor") {
+				Instructor* instructor = static_cast<Instructor*>(school.getMembers().get(k));
 				if (instructor->hasCategory(currentStudent->getCategory())) {
 					suitableInstructor.add(instructor);
 				}
@@ -188,10 +188,10 @@ void Admin::recomendation(DrivingSchool& school) {
 void Admin::printAllStudents(DrivingSchool& school) {
 	bool empty = true;
 	std::cout << "\n--ACTIVE STUDENT LIST--\n" << std::endl;
-	for (int i = 0; i < school.members.size(); i++)
-		if (school.members[i]->getType() == "Student")
+	for (int i = 0; i < school.getMembers().getSize(); i++)
+		if (school.getMembers().get(i)->getType() == "Student")
 		{
-			school.members[i]->printInfo();
+			school.getMembers().get(i)->printInfo();
 			empty = false;
 		}
 	if (empty)
@@ -199,10 +199,10 @@ void Admin::printAllStudents(DrivingSchool& school) {
 }
 void Admin::instructorCheck(DrivingSchool& school) {
 	bool empty = true;
-	for (int i = 0; i < school.members.size(); i++)
-		if (school.members[i]->getType() == "Instructor")
+	for (int i = 0; i < school.getMembers().getSize(); i++)
+		if (school.getMembers().get(i)->getType() == "Instructor")
 		{
-			school.members[i]->financialCalculations();
+			school.getMembers().get(i)->financialCalculations();
 			empty = false;
 		}
 	if (empty)

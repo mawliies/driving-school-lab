@@ -1,5 +1,6 @@
 #pragma once
 #include "person.h"
+#include "Collection.h"
 #include <string>
 #include <vector>
 #include <iostream>
@@ -11,7 +12,7 @@ enum Categories;
 class Instructor :public Person {
 private:
 	int drivingExperience;
-	std::vector<Categories> allowedCategory;
+	Collection<Categories> allowedCategory;
 public:
 	Instructor(std::string name, std::string surname, int age, int drivingExperience, Categories category);
 

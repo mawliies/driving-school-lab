@@ -85,7 +85,7 @@ public:
 	}
 };
 template <typename T>
-T findBest(Collection<T>& collection) {
+T findBest(Collection<T> collection) {
 	if (collection.getSize() == 0)
 		return T();
 	T best = collection.get(0);

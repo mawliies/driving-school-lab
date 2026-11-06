@@ -5,7 +5,7 @@
 
 Instructor::Instructor(std::string name, std::string surname, int age, int drivingExperience, Categories ctg) :Person(name, surname, age) {
 	this->drivingExperience = drivingExperience;
-	this->allowedCategory.push_back(ctg);
+	this->allowedCategory.add(ctg);
 }
 
 int Instructor::getExperience()const {
@@ -13,20 +13,20 @@ int Instructor::getExperience()const {
 }
 
 void Instructor::addCategory(Categories owned) {
-	this->allowedCategory.push_back(owned);
+	this->allowedCategory.add(owned);
 }
 
 bool Instructor::hasCategory(Categories ctg) {
-	for (int i = 0; i < allowedCategory.size(); i++)
-		if (allowedCategory[i] == ctg)
+	for (int i = 0; i < allowedCategory.getSize(); i++)
+		if (allowedCategory.get(i) == ctg)
 			return true;
 	return false;
 }
 void Instructor::printInfo()const {
 	Person::printInfo();
 	std::cout << "\nDriving experience: " << drivingExperience << ".\nOwned categories: ";
-	for (int i = 0; i < allowedCategory.size(); i++)
-		std::cout << ctgToString(allowedCategory[i]) << " ";
+	for (int i = 0; i < allowedCategory.getSize(); i++)
+		std::cout << ctgToString(allowedCategory.get(i)) << " ";
 	std::cout << "\n--------------------------------\n";
 }
 std::ostream& operator<<(std::ostream& os, const Instructor& instr) {
@@ -52,7 +52,7 @@ void Instructor::salaryCalculation(float baseSalary, float experienceBonus, floa
 	std::cout << "Instructor: " << this->name << " " << this->surname << "\n";
 	std::cout << "Base Salary: $" << baseSalary << "\n";
 	std::cout << "Experience Bonus (" << this->drivingExperience << " years): +$" << experienceBonus << "\n";
-	std::cout << "Categories Bonus (" << this->allowedCategory.size() << " opened): +$" << categoryBonus << "\n";
+	std::cout << "Categories Bonus (" << this->allowedCategory.getSize() << " opened): +$" << categoryBonus << "\n";
 	std::cout << "--------------------------------------------------\n";
 	std::cout << "TOTAL NET SALARY: $" << salary << "\n";
 	std::cout << "==================================================\n\n\n\n";
@@ -61,7 +61,7 @@ void Instructor::salaryCalculation(float baseSalary, float experienceBonus, floa
 void Instructor::financialCalculations()const {
 	float baseSalary = 800.00;
 	float experienceBonus = this->getExperience() * 15.00;
-	float categoryBonus = this->allowedCategory.size() * 35.00;
+	float categoryBonus = this->allowedCategory.getSize() * 35.00;
 	float salary = baseSalary + experienceBonus + categoryBonus;
 
 	salaryCalculation(baseSalary, experienceBonus, categoryBonus, salary);

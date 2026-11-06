@@ -2,6 +2,7 @@
 #include <string>
 #include <vector>
 #include <iostream>
+#include "Collection.h"
 class Person;
 class Instructor;
 class Student;
@@ -13,7 +14,7 @@ std::string ctgToString(Categories ctg);
 
 class DrivingSchool {
 private:
-	std::vector<Person*>members;
+	Collection<Person*> members;
 	friend class Admin;
 public:
 	DrivingSchool();
@@ -21,6 +22,7 @@ public:
 	DrivingSchool& operator+=(Person* newMember);
 	DrivingSchool& operator-=(Person* newMember);
 	friend void defining(DrivingSchool& school, Student* stud);
+	Collection<Person*>& getMembers();
 	void registration();
 	void profile(Student* stud);
 	void findStudent();
