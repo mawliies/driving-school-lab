@@ -18,7 +18,6 @@ private:
 	friend class Admin;
 public:
 	DrivingSchool();
-	
 	DrivingSchool& operator+=(Person* newMember);
 	DrivingSchool& operator-=(Person* newMember);
 	friend void defining(DrivingSchool& school, Student* stud);
@@ -30,7 +29,6 @@ public:
 	void information();
 	void loginAdmin();
 	void statistics();
-
 	~DrivingSchool();
 };
 
@@ -39,3 +37,6 @@ void defining(DrivingSchool& school, Student* stud);
 void checkAge(int age, int newCategoryNum);
 void menu(DrivingSchool& school);
 void test(DrivingSchool& school);
+
+
+ 
