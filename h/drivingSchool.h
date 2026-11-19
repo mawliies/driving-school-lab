@@ -35,6 +35,6 @@ public:
 };
 
 void defining(DrivingSchool& school, Student* stud);
-bool checkAge(int age, int newCategoryNum);
+void checkAge(int age, int newCategoryNum);
 void menu(DrivingSchool& school);
 void test(DrivingSchool& school);

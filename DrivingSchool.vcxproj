@@ -30,6 +30,14 @@
     <ClInclude Include="h\admin.h" />
     <ClInclude Include="h\Collection.h" />
     <ClInclude Include="h\drivingSchool.h" />
+    <ClInclude Include="h\exceptions\AgeRestrictionException.h" />
+    <ClInclude Include="h\exceptions\AllExceptions.h" />
+    <ClInclude Include="h\exceptions\DuplicateDataException.h" />
+    <ClInclude Include="h\exceptions\InvalidOperationException.h" />
+    <ClInclude Include="h\exceptions\NotFoundException.h" />
+    <ClInclude Include="h\exceptions\SchoolException.h" />
+    <ClInclude Include="h\exceptions\InvalidDataException.h" />
+    <ClInclude Include="h\exceptions\OutOfRangeException.h" />
     <ClInclude Include="h\instructor.h" />
     <ClInclude Include="h\person.h" />
     <ClInclude Include="h\student.h" />
@@ -92,6 +100,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>;C:\labs\2k\DrivingSchool\DrivingSchool\exceptions;$(ProjectDir)h\exceptions</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -106,6 +115,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>;C:\labs\2k\DrivingSchool\DrivingSchool\exceptions;$(ProjectDir)h\exceptions</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -118,7 +128,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\labs\2k\DrivingSchool\DrivingSchool\h\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\labs\2k\DrivingSchool\DrivingSchool\h\;C:\labs\2k\DrivingSchool\DrivingSchool\exceptions;$(ProjectDir)h\exceptions</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -133,7 +143,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\labs\2k\DrivingSchool\DrivingSchool\h\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\labs\2k\DrivingSchool\DrivingSchool\h\;C:\labs\2k\DrivingSchool\DrivingSchool\exceptions;$(ProjectDir)h\exceptions</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>

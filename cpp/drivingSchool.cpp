@@ -1,6 +1,7 @@
+#include "AllExceptions.h"
 #include "person.h"
 #include "drivingSchool.h"
-#include "instructor.h"
+#include "instructor.h"	
 #include "student.h"
 #include "admin.h"
 
@@ -32,14 +33,28 @@ Collection<Person*>& DrivingSchool::getMembers() {
 
 DrivingSchool& DrivingSchool::operator+=(Person* newMember) {
 	if (newMember == nullptr)
-		return *this;
+		throw NotFoundException("No member for adding.\n");
+
+	if (newMember->getType() == "Student") {
+		Student* newStud = static_cast<Student*>(newMember);
+		for (int i = 0; i < members.getSize(); i++) 
+			if (members.get(i)->getType() == "Student") {
+				Student* existing = static_cast<Student*>(members.get(i));
+				if (*existing == *newStud) {
+					std::string name = newStud->getName() + " " + newStud->getSurname();
+					delete newMember; 
+					throw DuplicateDataException(name);
+				}
+			}
+	}
+
 	this->members.add(newMember);
 	return *this;
 }
 
 DrivingSchool& DrivingSchool::operator-=(Person* newMember) {
 	if (newMember == nullptr)
-		return *this;
+		throw NotFoundException("No member for deleting.\n");
 	int i = members.findElement(newMember);
 	if (i != -1) {
 		delete members.get(i); 
@@ -48,60 +63,59 @@ DrivingSchool& DrivingSchool::operator-=(Person* newMember) {
 	return *this;
 }
 
-bool checkAge(int age, int newCategoryNum) {
-	if (age < 16) {
-		std::cout << "\nRegistration failed: Student must be at least 16 years old to register!" << std::endl;
-		std::cout << "--------------------------------" << std::endl;
-		return false;
-	}
+void checkAge(int age, int newCategoryNum) {
+	if (newCategoryNum < 0 || newCategoryNum > 6)
+		throw OutOfRangeException(newCategoryNum, 6);
+	if (age < 16)
+		throw AgeRestrictionException("Registration failed: Student must be at least 16 years old to register!\n");
 	std::cout << "\nEnter student's desired license category (0-AM, 1-A, 2-B, 3-C, 4-D, 5-F, 6-I): " << std::endl;
 	std::cout << "[AUTO] " << newCategoryNum << "." << std::endl;
-	if (((age < 18 && age >= 16) && newCategoryNum != 1)) {
-		std::cout << "\nRegistration failed: You can register this student only on license category AM!" << std::endl;
-		std::cout << "--------------------------------" << std::endl;
-		return false;
-	}
-	if (((age >= 18 && age < 21) && newCategoryNum >= 4)) {
-		std::cout << "\nRegistration failed: You can't register this student on D, F, I license categories!" << std::endl;
-		std::cout << "--------------------------------" << std::endl;
-		return false;
-	}
-	return true;
+	if (((age < 18 && age >= 16) && newCategoryNum != 0))
+		throw AgeRestrictionException("Registration failed : You can register this student only on license category AM!\n");
+	if (((age >= 18 && age < 21) && newCategoryNum >= 4))
+		throw AgeRestrictionException("Registration failed: You can't register this student on D, F, I license categories!\n");
 }
 
 void defining(DrivingSchool& school, Student* stud) {	
 	Collection<Instructor*> suitableInstructor;
 	int choice = 0;
-
+	if (stud == nullptr)
+		throw NotFoundException("No student found.\n");
 	for (int i = 0; i < school.members.getSize(); i++)
 		if (school.members.get(i)->getType() == "Instructor") {
 			Instructor* instructor = static_cast<Instructor*>(school.members.get(i));
 			if(instructor->hasCategory(stud->getCategory()))
 				suitableInstructor.add(instructor);
 		}
-	if (suitableInstructor.getSize() == 0) {
-		std::cout << "No suitable instructor found for student " << stud->getName() << " " << stud->getSurname() << "." << std::endl;
-		return;
+
+	if (suitableInstructor.getSize() == 0)
+		throw NotFoundException("No suitable instructor found for student " + stud->getName() + " " + stud->getSurname() + "\n");
+
+	for (int i = 0; i < suitableInstructor.getSize(); i++) {	
+		if (stud->hasInstructor(suitableInstructor.get(i)))
+			throw InvalidOperationException("Instructor is already assigned.\n");
 	}
-	for (int i = 0; i < suitableInstructor.getSize(); i++) {
-		if (stud->hasInstructor(suitableInstructor.get(i))) {
-			std::cout << "\nInstructor is already assigned to this student.\n";
-			system("pause");
-			return;
-		}
-	}
+
 	std::cout << "\n-- Available instructors for " << ctgToString(stud->getCategory()) << " --\n" << std::endl;
 	for (int i = 0; i < suitableInstructor.getSize(); i++)
 		std::cout << i + 1 << ". " << suitableInstructor.get(i)->getName() << " " << suitableInstructor.get(i)->getSurname() << ". (Experience: " << suitableInstructor.get(i)->getExperience() << " years).\n" << std::endl;
 
 	std::cout << "Enter the number of the selected instructor (0 to cancel): ";
-	std::cin >> choice;
-	if (choice > 0 && choice <= suitableInstructor.getSize()) {
-		stud->setInstructor(suitableInstructor.get(choice - 1));
-		std::cout << "Congratulations! The instructor has been assigned." << std::endl;
+	
+	if (!(std::cin >> choice)) {
+		std::cin.clear();
+		std::cin.ignore(100, '\n');
+		throw InvalidDataException("Expected input: integer");
 	}
-	else
-		std::cout << "Selection canceled or invalid number entered. Instructor not assigned." << std::endl;
+	if (choice < 0 || choice > suitableInstructor.getSize())
+		throw OutOfRangeException(choice, suitableInstructor.getSize());
+	else if (choice == 0) {
+		std::cout << "Exit!\n";
+		system("pause");
+		return;
+	}
+	stud->setInstructor(suitableInstructor.get(choice - 1));
+	std::cout << "Congratulations! The instructor has been assigned." << std::endl;
 	std::cout << "--------------------------------" << std::endl;
 	system("pause");
 	system("cls");
@@ -115,11 +129,23 @@ void DrivingSchool::registration() {
 	std::cin >> newName;
 	std::cin >> newSurname;
 	std::cout << "\nEnter your age: " << std::endl;
-	std::cin >> newAge;
+	if (!(std::cin >> newAge)) {
+		std::cin.clear();
+		std::cin.ignore(100, '\n');
+		throw InvalidDataException("Expected integer for age.\n");
+	}
+	if (newAge <= 0 || newAge > 100)
+		throw InvalidDataException("You must input your real age.\n");
+
 	std::cout << "\nEnter your desired license category (0-AM, 1-A, 2-B, 3-C, 4-D, 5-F, 6-I): " << std::endl;
-	std::cin >> newCategoryNum;
-	if (!checkAge(newAge, newCategoryNum))
-		return;
+	if (!(std::cin >> newCategoryNum)) {
+		std::cin.clear();
+		std::cin.ignore(100, '\n');
+		throw InvalidDataException("Expected integer for category.\n");
+	}
+	if (newCategoryNum < 0 || newCategoryNum>6)
+		throw OutOfRangeException(newCategoryNum, 6);
+	checkAge(newAge, newCategoryNum);
 	Categories newCategory = static_cast<Categories>(newCategoryNum);
 
 	Student* newStudent = new Student(newName, newSurname, newAge, newCategory, nullptr);
@@ -135,28 +161,52 @@ void DrivingSchool::profile(Student* stud) {
 	{
 		system("cls");
 		std::cout << "--STUDENT PERSONAL PROFILE--\n1. View profile card.\n2. Assign an instructor.\n3. Return to main menu." << std::endl;
-		std::cin >> choice;
+		
+		try {
+			if (!(std::cin >> choice)) {
+				std::cin.clear();
+				std::cin.ignore(100, '\n');
+				throw InvalidDataException("Expected input: integer.\n");
+			}
+			switch (choice) {
+			case 1:
+				system("cls");
+				std::cout << *stud;
+				system("pause");
+				break;
 
-		switch (choice) {
-		case 1:
-		{
-			system("cls");
-			std::cout << *stud;
+			case 2:
+				system("cls");
+				defining(*this, stud);
+				break;
+
+			case 3:
+				system("cls");
+				return;
+
+			default:
+				throw OutOfRangeException(choice, 3);
+			}
+		}
+		catch (const InvalidOperationException& e) {
+			std::cerr << "\n[OPERATION DENIED] " << e.what() << "\n";
 			system("pause");
-			break;
 		}
-		case 2: {
-			system("cls");
-			defining(*this, stud);
-			break;
+		catch (const NotFoundException& e) {
+			std::cerr << "\n[NOT FOUND] " << e.what() << "\n";
+			system("pause");
 		}
-		case 3: {
-			system("cls");
-			return;
+		catch (const OutOfRangeException& e) {
+			std::cerr << "\n[OUT OF RANGE] " << e.what() << "\n";
+			system("pause");
 		}
-		default:
-			std::cout << "Invalid menu option." << std::endl;
-			break;
+		catch (const InvalidDataException& e) {
+			std::cerr << "\n[INVALID INPUT] " << e.what() << "\n";
+			system("pause");
+		}
+		catch (const SchoolException& e) {
+			std::cerr << "\n[PROFILE ERROR] " << e.what() << "\n";
+			system("pause");
 		}
 	}
 }
@@ -164,7 +214,7 @@ void DrivingSchool::profile(Student* stud) {
 void DrivingSchool::findStudent() {		
 	std::string myName, mySurname;	
 	Student* found = nullptr;
-	Student other("", "", 0, Categories::AM, nullptr);
+	Student other("Temp", "Temp", 0, Categories::AM, nullptr);
 	int reg;
 
 	std::cout << "\nTo log into your personal profile, enter your first and last name:\n" << std::endl;
@@ -178,24 +228,27 @@ void DrivingSchool::findStudent() {
 				break;
 			}
 		}
-	if (found != nullptr) {
+	if (found != nullptr) {	
 		system("cls");
 		std::cout << "You have successfully logged into your profile!\n--------------------------------\n";
 
 		this->profile(found);
 	}
-	else {		
+	else {			
 		std::cout << "Account not found. Would you like to register?\n" << std::endl;
 		std::cout << "1. YES\n2. NO\n" << std::endl;
-		do
-			std::cin >> reg;
-		while (reg != 1 && reg != 2);
+		if (!(std::cin >> reg)) {
+			std::cin.clear();
+			std::cin.ignore(100, '\n');
+			throw InvalidDataException("Expected input: integer.\n");
+		}
+		if (reg < 1 || reg>2)
+			throw OutOfRangeException(reg, 2);
 		if (reg == 1)
 			this->registration();
 		system("pause");
 		return;
 	}
-
 }
 void DrivingSchool::printAllInstructors() {
 	system("cls");
@@ -207,7 +260,7 @@ void DrivingSchool::printAllInstructors() {
 			empty = false;
 		}
 	if (empty)
-		std::cout << "The instructor database is currently empty." << std::endl;
+		throw NotFoundException("The instructor database is currently empty.\n");
 	system("pause");
 }
 void DrivingSchool::information() {
@@ -223,56 +276,75 @@ void DrivingSchool::information() {
 	car.add("DRILL");
 	car.add("MAZ-203Т");
 	int choice = 0;
-	std::cout << "\n--1. Check instructor's list.\n--2. Check driving school's autopark.\n--3. Search exactly car in autopark.\n";
-	std::cin >> choice;
-	switch (choice) {
-	case 1: {
-		this->printAllInstructors();
-		break;
+	std::cout << "\n--1. Check instructor's list.\n--2. Check driving school's autopark.\n--3. Search exactly car in autopark.\n--4. Exit.\n";
+	
+	try {
+		if (!(std::cin >> choice)) {
+			std::cin.clear();
+			std::cin.ignore(100, '\n');
+			throw InvalidDataException("Expected input: integer.\n");
+		}
+		switch (choice) {
+		case 1:
+			this->printAllInstructors();
+			break;
+		case 2:
+			std::cout << "==================================================" << std::endl;
+			std::cout << "             DRIVING SCHOOL AUTOPARK              " << std::endl;
+			std::cout << "==================================================" << std::endl;
+			car.print();
+			std::cout << "==================================================" << std::endl;
+			system("pause");
+			break;
+
+		case 3: {
+			  system("cls");
+			  std::string typing;
+			  std::cout << "Type the exactly mark of the car (e.g. Hyundai Accent (Automatic))...\n";
+			  std::cin.ignore();
+			  std::getline(std::cin, typing);
+			  int i = car.findElement(typing);
+			  if (i == -1)
+				  throw NotFoundException("This car is currently not in our fleet.\n");
+			  std::cout << "\nCar is AVAILABLE! Check all the autopark information for more details...\n";
+			  system("pause");
+			  break;
+		}
+		case 4:
+			std::cout << "Exit!\n";
+			system("pause");
+			return;
+		default:
+			throw OutOfRangeException(choice, 4);
+		}
 	}
-	case 2: {
-		std::cout << "==================================================" << std::endl;
-		std::cout << "             DRIVING SCHOOL AUTOPARK              " << std::endl;
-		std::cout << "==================================================" << std::endl;
-		car.print();
-		std::cout << "==================================================" << std::endl;
+	catch (const NotFoundException& e) {
+		std::cerr << "\n[CAR NOT FOUND] " << e.what() << "\n";
 		system("pause");
-		break;
 	}
-	case 3: {
-		system("cls");
-		std::string typing;
-		std::cout << "Type the exactly mark of the car (e.g. Hyundai Accent (Automatic))...\n";
-		std::cin.ignore();
-		std::getline(std::cin, typing);
-		int i = car.findElement(typing);
-		if (i != -1)
-			std::cout << "\n[SUCCESS] Car is AVAILABLE! Check all the autopark information for more details...\n";
-		else
-			std::cout<<"\n[NOT FOUND] This car is currently not in our fleet.\n"; 
+	catch (const OutOfRangeException& e) {
+		std::cerr << "\n[OUT OF RANGE] " << e.what() << "\n";
 		system("pause");
-		break;
 	}
-	default:
-		std::cout << "Exit!\n";
+	catch (const InvalidDataException& e) {
+		std::cerr << "\n[INVALID INPUT] " << e.what() << "\n";
 		system("pause");
-		return;
+	}
+	catch (const SchoolException& e) {
+		std::cerr << "\n[INFORMATION ERROR] " << e.what() << "\n";
+		system("pause");
 	}
 }
 
 void DrivingSchool::statistics() {		
 	system("cls");
-	bool empty = true;
 	Collection<Instructor*> current;
 	for (int i = 0; i < members.getSize(); i++) {
 		if (members.get(i)->getType() == "Instructor")
 			current.add(static_cast<Instructor*>(members.get(i)));
 	}
-	if (current.getSize() == 0) {
-		std::cout << "The instructor database is currently empty. Statistics unavailable." << std::endl;
-		system("pause");
-		return;
-	}
+	if (current.getSize() == 0)
+		throw NotFoundException("The instructor database is currently empty. Statistics unavailable.\n");
 
 	Instructor* best = current.get(0);
 	Instructor* young = current.get(0);
@@ -295,16 +367,11 @@ void DrivingSchool::loginAdmin() {
 	Collection<Admin*>current;
 	int pass = 0;
 	int num = 0;
-	
 	for (int i = 0; i < members.getSize(); i++)
-		if (members.get(i)->getType() == "Administrator")
+		if (members.get(i)->getType() == "Administrator")	
 			current.add(static_cast<Admin*>(members.get(i)));
-		
-	if (current.getSize() == 0) {
-		std::cout << "No current admins!.\n";
-		system("pause");
-		return;
-	}
+	if (current.getSize() == 0)
+		throw NotFoundException("No current admins.\n");
 	std::cout << "==================================================" << std::endl;
 	std::cout << "                 LOGIN AS ADMIN                   " << std::endl;
 	std::cout << "==================================================" << std::endl;
@@ -314,19 +381,24 @@ void DrivingSchool::loginAdmin() {
 		current.get(i)->printInfo();
 	}
 	std::cout << "\nENTER CHOICE\n";
-	std::cin >> num;
+	if (!(std::cin >> num)) {
+		std::cin.clear();
+		std::cin.ignore(100, '\n');
+		throw InvalidDataException("Expected input: integer.\n");
+	}
+	if (num<1 || num>current.getSize())
+		throw OutOfRangeException(num, current.getSize());
 	std::cout << "\nENTER SPECIAL ADMIN PASSWORD: ";
-	std::cin >> pass;
-	if ((num > 0 && num <= current.getSize()) && current.get(num - 1)->truePassword(pass)) {
-		std::cout << "\nCorrect password! Welcome!\n";
-		system("pause");
-		current.get(num - 1)->admin(*this);
+	if (!(std::cin >> pass)) {
+		std::cin.clear();
+		std::cin.ignore(100, '\n');
+		throw InvalidDataException("Expected input: integer.\n");
 	}
-	else {
-		std::cout << "\nWrong password! Request declined\n";
-		system("pause");
-	}
-		
+	if(!(current.get(num - 1)->truePassword(pass)))
+		throw InvalidDataException("Wrong password!Request declined\n");
+	std::cout << "\nCorrect password! Welcome!\n";
+	system("pause");
+	current.get(num - 1)->admin(*this);
 }
 
 DrivingSchool::~DrivingSchool() {
@@ -337,39 +409,78 @@ DrivingSchool::~DrivingSchool() {
 }
 
 void menu(DrivingSchool& school) {
-	int choice1,choice2;
+	int choice = 0;
 	bool toDo = true;
-
 	while (toDo) {
 		system("cls");
 		std::cout << "-----------DRIVING SCHOOL-----------" << std::endl;
 		std::cout << "\n--1. Log in as a student.\n--2. Log in as an administrator.\n--3. View general information.\n--4. View statistics.\n--5. Exit program.\n";
-		std::cin >> choice1;
-		switch (choice1) {
-		case 1: {
-			school.findStudent();
-			break;
+
+		try {
+			if (!(std::cin >> choice)) {
+				std::cin.clear();
+				std::cin.ignore(100, '\n');
+				throw InvalidDataException("Expected input: integer.\n");
+			}
+
+			switch (choice) {
+			case 1:
+				school.findStudent();
+				break;
+
+			case 2:
+				school.loginAdmin();
+				break;
+
+			case 3:
+				school.information();
+				break;
+
+			case 4:
+				school.statistics();
+				break;
+
+			case 5:
+				std::cout << "Program successfully completed.\n";
+				toDo = false;
+				system("pause");
+				break;
+
+			default:
+				throw OutOfRangeException(choice, 5);
+			}
 		}
-		case 2: {
-			school.loginAdmin();
-			break;
+		catch (const AgeRestrictionException& e) {
+			std::cerr << "\n[AGE RESTRICTION] " << e.what() << "\n";
+			system("pause");
 		}
-		case 3: {
-			school.information();
-			break;
+		catch (const DuplicateDataException& e) {
+			std::cerr << "\n[DUPLICATE MEMBER] " << e.what() << "\n";
+			system("pause");
 		}
-		case 4: {
-			school.statistics();
-			break;
+		catch (const InvalidOperationException& e) {
+			std::cerr << "\n[ACCESS / OPERATION DENIED] " << e.what() << "\n";
+			system("pause");
 		}
-		case 5: {
-			  std::cout << "Program successfully completed.\n";
-			  toDo = false;
-			  break;
+		catch (const NotFoundException& e) {
+			std::cerr << "\n[NOT FOUND] " << e.what() << "\n";
+			system("pause");
 		}
-		default:
-			std::cout << "Exit!";
-			break;
+		catch (const OutOfRangeException& e) {
+			std::cerr << "\n[OUT OF RANGE] " << e.what() << "\n";
+			system("pause");
+		}
+		catch (const InvalidDataException& e) {
+			std::cerr << "\n[INVALID INPUT] " << e.what() << "\n";
+			system("pause");
+		}
+		catch (const SchoolException& e) {
+			std::cerr << "\n[SYSTEM ERROR] " << e.what() << "\n";
+			system("pause");
+		}
+		catch (const std::exception& e) {
+			std::cerr << "\n[CRITICAL ERROR] " << e.what() << "\n";
+			system("pause");
 		}
 	}
 }
@@ -384,7 +495,7 @@ void test(DrivingSchool& school) {		//тестовые для лр
 
 	i1->addCategory(A);
 	i3->addCategory(D); i3->addCategory(F);
-	i4->addCategory(C);
+	i4->addCategory(C); i4->addCategory(AM);
 	i5->addCategory(D); i5->addCategory(I);
 	i6->addCategory(AM); i6->addCategory(A);
 
