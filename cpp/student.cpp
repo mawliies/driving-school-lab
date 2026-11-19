@@ -92,7 +92,7 @@ std::istream& operator>>(std::istream& is, Student& stud) {
 	std::string tempName, tempSurname;
 	if (!(is >> tempName >> tempSurname)) {
 		is.clear();
-		is.ignore(10000, '\n');
+		is.ignore(100, '\n');
 		throw InvalidDataException("Failed to read student's first and last name.\n");
 	}
 	stud.setName(tempName);

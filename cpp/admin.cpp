@@ -38,11 +38,7 @@ void Admin::DeleteStudent(DrivingSchool& school) {
 		std::cout << i + 1 << ". " << current.get(i)->getName() << " " << current.get(i)->getSurname() << std::endl;
 
 	std::cout << "Enter student number: ";
-	if (!(std::cin >> num)) {
-		std::cin.clear();
-		std::cin.ignore(100, '\n');
-		throw InvalidDataException("Expected input: integer.\n");
-	}
+	num = readInt("Expected input: integer.\n");
 	if (num < 1 || num > current.getSize())
 		throw OutOfRangeException(num, current.getSize());
 
@@ -71,11 +67,7 @@ void Admin::DeleteInstructor(DrivingSchool& school) {
 		std::cout << i + 1 << ". " << current.get(i)->getName() << " " << current.get(i)->getSurname() << std::endl;
 
 	std::cout << "Enter instructor number: ";
-	if (!(std::cin >> num)) {
-		std::cin.clear();
-		std::cin.ignore(100, '\n');
-		throw InvalidDataException("Expected input: integer.\n");
-	}
+	num = readInt("Expected input: integer.\n");
 	if (num < 1 || num > current.getSize())
 		throw OutOfRangeException(num, current.getSize());
 
@@ -103,20 +95,12 @@ void Admin::AddStudent(DrivingSchool& school) {
 	std::cin >> newName >> newSurname;
 
 	std::cout << "\nEnter student's age: " << std::endl;
-	if (!(std::cin >> newAge)) {
-		std::cin.clear();
-		std::cin.ignore(100, '\n');
-		throw InvalidDataException("Expected input: integer for age.\n");
-	}
+	newAge = readInt("Expected input: integer.\n");
 	if (newAge <= 0 || newAge > 100)
 		throw InvalidDataException("You must input a real age (1-100).\n");
 
 	std::cout << "\nEnter student's desired license category (0-AM, 1-A, 2-B, 3-C, 4-D, 5-F, 6-I): " << std::endl;
-	if (!(std::cin >> newCategoryNum)) {
-		std::cin.clear();
-		std::cin.ignore(100, '\n');
-		throw InvalidDataException("Expected input: integer for category.\n");
-	}
+	newCategoryNum = readInt("Expected input: integer.\n");
 	checkAge(newAge, newCategoryNum);
 
 	Categories newCategory = static_cast<Categories>(newCategoryNum);
@@ -137,29 +121,17 @@ void Admin::AddInstructor(DrivingSchool& school) {
 	std::cin >> newName >> newSurname;
 
 	std::cout << "\nEnter instructor's age: " << std::endl;
-	if (!(std::cin >> newAge)) {
-		std::cin.clear();
-		std::cin.ignore(100, '\n');
-		throw InvalidDataException("Expected input: integer for age.\n");
-	}
+	newAge = readInt("Expected input: integer.\n");
 	if (newAge < 18 || newAge > 100)
 		throw AgeRestrictionException("Instructor must be between 18 and 100 years old.\n");
 
 	std::cout << "\nEnter instructor's experience: " << std::endl;
-	if (!(std::cin >> newExp)) {
-		std::cin.clear();
-		std::cin.ignore(100, '\n');
-		throw InvalidDataException("Expected input: integer for experience.\n");
-	}
+	newExp = readInt("Expected input: integer.\n");
 	if (newExp < 0 || newExp >(newAge - 18))
 		throw InvalidDataException("Invalid driving experience relative to age.\n");
 
 	std::cout << "\nEnter instructor's initial license category (0-AM, 1-A, 2-B, 3-C, 4-D, 5-F, 6-I): " << std::endl;
-	if (!(std::cin >> newCategoryNum)) {
-		std::cin.clear();
-		std::cin.ignore(100, '\n');
-		throw InvalidDataException("Expected input: integer for category.\n");
-	}
+	newCategoryNum = readInt("Expected input: integer.\n");
 	if (newCategoryNum < 0 || newCategoryNum > 6)
 		throw OutOfRangeException(newCategoryNum, 6);
 
@@ -169,12 +141,7 @@ void Admin::AddInstructor(DrivingSchool& school) {
 	bool add = true;
 	while (add) {
 		std::cout << "Does the instructor have more categories?\n1. Yes.\n2. No." << std::endl;
-		if (!(std::cin >> answer)) {
-			delete newInstructor;
-			std::cin.clear();
-			std::cin.ignore(100, '\n');
-			throw InvalidDataException("Expected input: integer.\n");
-		}
+		answer = readInt("Expected input: integer.\n");
 		switch (answer) {
 		case 1: {
 			std::cout << "Enter category number (0-AM, 1-A, 2-B, 3-C, 4-D, 5-F, 6-I): ";
@@ -298,12 +265,7 @@ void Admin::admin(DrivingSchool& school) {
 		std::cout << "1. Operations on students\n2. Operations on instructors.\n3. Exit the admin menu.\nSelect an option: ";
 
 		try {
-			if (!(std::cin >> choice)) {
-				std::cin.clear();
-				std::cin.ignore(100, '\n');
-				throw InvalidDataException("Expected input: integer.\n");
-			}
-
+			choice = readInt("Expected input: integer.\n");
 			switch (choice) {
 			case 1: {
 				system("cls");
@@ -311,12 +273,7 @@ void Admin::admin(DrivingSchool& school) {
 				std::cout << "------------------------------------" << std::endl;
 				std::cout << "1. View the student's information.\n2. Delete student.\n3. Add student.\n4. Check students without instructors.\nYour choice: ";
 
-				if (!(std::cin >> way1)) {
-					std::cin.clear();
-					std::cin.ignore(100, '\n');
-					throw InvalidDataException("Expected input: integer.\n");
-				}
-
+				way1 = readInt("Expected input: integer.\n");
 				switch (way1) {
 				case 1: {
 					this->printAllStudents(school);
@@ -342,7 +299,7 @@ void Admin::admin(DrivingSchool& school) {
 					system("cls");
 					break;
 				}
-				default: // option
+				default: 
 					throw OutOfRangeException(way1, 4);
 				}
 				break;
@@ -353,11 +310,7 @@ void Admin::admin(DrivingSchool& school) {
 				std::cout << "------------------------------------" << std::endl;
 				std::cout << "1. Delete instructor.\n2. Add instructor.\n3. Check instructors' salary.\nYour choice: ";
 
-				if (!(std::cin >> way2)) {
-					std::cin.clear();
-					std::cin.ignore(100, '\n');
-					throw InvalidDataException("Expected input: integer.\n");
-				}
+				way2 = readInt("Expected input: integer.\n");
 
 				switch (way2) {
 				case 1: {
@@ -378,7 +331,7 @@ void Admin::admin(DrivingSchool& school) {
 					system("cls");
 					break;
 				}
-				default: // option
+				default:
 					throw OutOfRangeException(way2, 3);
 				}
 				break;
@@ -390,7 +343,7 @@ void Admin::admin(DrivingSchool& school) {
 				system("cls");
 				break;
 			}
-			default: // option
+			default: 
 				throw OutOfRangeException(choice, 3);
 			}
 		}

@@ -34,6 +34,7 @@ public:
 	~DrivingSchool();
 };
 
+int readInt(const std::string& errorMsg);
 void defining(DrivingSchool& school, Student* stud);
 void checkAge(int age, int newCategoryNum);
 void menu(DrivingSchool& school);

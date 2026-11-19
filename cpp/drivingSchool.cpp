@@ -31,6 +31,16 @@ Collection<Person*>& DrivingSchool::getMembers() {
 	return this->members;
 }
 
+int readInt(const std::string& errorMsg) {
+	int value = 0;
+	if (!(std::cin >> value)) {
+		std::cin.clear();
+		std::cin.ignore(10000, '\n');
+		throw InvalidDataException(errorMsg);
+	}
+	return value;
+}
+
 DrivingSchool& DrivingSchool::operator+=(Person* newMember) {
 	if (newMember == nullptr)
 		throw NotFoundException("No member for adding.\n");
@@ -102,11 +112,7 @@ void defining(DrivingSchool& school, Student* stud) {
 
 	std::cout << "Enter the number of the selected instructor (0 to cancel): ";
 	
-	if (!(std::cin >> choice)) {
-		std::cin.clear();
-		std::cin.ignore(100, '\n');
-		throw InvalidDataException("Expected input: integer");
-	}
+	choice = readInt("Expected input: integer");
 	if (choice < 0 || choice > suitableInstructor.getSize())
 		throw OutOfRangeException(choice, suitableInstructor.getSize());
 	else if (choice == 0) {
@@ -129,20 +135,12 @@ void DrivingSchool::registration() {
 	std::cin >> newName;
 	std::cin >> newSurname;
 	std::cout << "\nEnter your age: " << std::endl;
-	if (!(std::cin >> newAge)) {
-		std::cin.clear();
-		std::cin.ignore(100, '\n');
-		throw InvalidDataException("Expected integer for age.\n");
-	}
+	newAge = readInt("Expected input: integer");
 	if (newAge <= 0 || newAge > 100)
 		throw InvalidDataException("You must input your real age.\n");
 
 	std::cout << "\nEnter your desired license category (0-AM, 1-A, 2-B, 3-C, 4-D, 5-F, 6-I): " << std::endl;
-	if (!(std::cin >> newCategoryNum)) {
-		std::cin.clear();
-		std::cin.ignore(100, '\n');
-		throw InvalidDataException("Expected integer for category.\n");
-	}
+	newCategoryNum = readInt("Expected input: integer");
 	if (newCategoryNum < 0 || newCategoryNum>6)
 		throw OutOfRangeException(newCategoryNum, 6);
 	checkAge(newAge, newCategoryNum);
@@ -163,11 +161,7 @@ void DrivingSchool::profile(Student* stud) {
 		std::cout << "--STUDENT PERSONAL PROFILE--\n1. View profile card.\n2. Assign an instructor.\n3. Return to main menu." << std::endl;
 		
 		try {
-			if (!(std::cin >> choice)) {
-				std::cin.clear();
-				std::cin.ignore(100, '\n');
-				throw InvalidDataException("Expected input: integer.\n");
-			}
+			choice = readInt("Expected input: integer.\n");
 			switch (choice) {
 			case 1:
 				system("cls");
@@ -237,11 +231,7 @@ void DrivingSchool::findStudent() {
 	else {			
 		std::cout << "Account not found. Would you like to register?\n" << std::endl;
 		std::cout << "1. YES\n2. NO\n" << std::endl;
-		if (!(std::cin >> reg)) {
-			std::cin.clear();
-			std::cin.ignore(100, '\n');
-			throw InvalidDataException("Expected input: integer.\n");
-		}
+		reg = readInt("Expected input: integer.\n");
 		if (reg < 1 || reg>2)
 			throw OutOfRangeException(reg, 2);
 		if (reg == 1)
@@ -279,11 +269,7 @@ void DrivingSchool::information() {
 	std::cout << "\n--1. Check instructor's list.\n--2. Check driving school's autopark.\n--3. Search exactly car in autopark.\n--4. Exit.\n";
 	
 	try {
-		if (!(std::cin >> choice)) {
-			std::cin.clear();
-			std::cin.ignore(100, '\n');
-			throw InvalidDataException("Expected input: integer.\n");
-		}
+		choice = readInt("Expected input: integer.\n");
 		switch (choice) {
 		case 1:
 			this->printAllInstructors();
@@ -381,19 +367,11 @@ void DrivingSchool::loginAdmin() {
 		current.get(i)->printInfo();
 	}
 	std::cout << "\nENTER CHOICE\n";
-	if (!(std::cin >> num)) {
-		std::cin.clear();
-		std::cin.ignore(100, '\n');
-		throw InvalidDataException("Expected input: integer.\n");
-	}
+	num = readInt("Expected input: integer.\n");
 	if (num<1 || num>current.getSize())
 		throw OutOfRangeException(num, current.getSize());
 	std::cout << "\nENTER SPECIAL ADMIN PASSWORD: ";
-	if (!(std::cin >> pass)) {
-		std::cin.clear();
-		std::cin.ignore(100, '\n');
-		throw InvalidDataException("Expected input: integer.\n");
-	}
+	pass = readInt("Expected input: integer.\n");
 	if(!(current.get(num - 1)->truePassword(pass)))
 		throw InvalidDataException("Wrong password!Request declined\n");
 	std::cout << "\nCorrect password! Welcome!\n";
@@ -417,12 +395,7 @@ void menu(DrivingSchool& school) {
 		std::cout << "\n--1. Log in as a student.\n--2. Log in as an administrator.\n--3. View general information.\n--4. View statistics.\n--5. Exit program.\n";
 
 		try {
-			if (!(std::cin >> choice)) {
-				std::cin.clear();
-				std::cin.ignore(100, '\n');
-				throw InvalidDataException("Expected input: integer.\n");
-			}
-
+			choice = readInt("Expected input: integer.\n");
 			switch (choice) {
 			case 1:
 				school.findStudent();
